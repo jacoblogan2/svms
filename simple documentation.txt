@@ -1,0 +1,21 @@
+simple documentation
+
+starting projects
+1. start frontend and backend separately
+
+FRONTEND
+open front end forder  cmd and vs code! 
+open in vscode C:\SVMS\svms_frontend>code .
+start project C:\SVMS\svms_frontend>npm start
+
+BACKEND
+Open in cmd and vs code too and start it 
+C:\SVMS\svms_backend>code .
+C:\SVMS\svms_backend>npm run start:dev
+
+Reset data
+C:\SVMS\svms_backend>npm run resetDev
+
+n.b: to reset you can open in onother terminal and run reset command
+C:\SVMS\svms_backend>npm run resetDev
+
