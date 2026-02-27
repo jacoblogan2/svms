@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const AddUser = () => {
   const [formData, setFormData] = useState({
-    reson: "",
-    reson: "",
+    reason: "",
     county_id: "",
     district_id: "",
     clan_id: "",

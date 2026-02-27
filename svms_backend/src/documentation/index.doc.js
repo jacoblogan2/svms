@@ -725,7 +725,7 @@ const options = {
             "application/json": {
              
               example: {
-                reson:"1",
+                reason:"1",
                 province_id:"1",
                 district_id:"1",
                 sector_id:"1",

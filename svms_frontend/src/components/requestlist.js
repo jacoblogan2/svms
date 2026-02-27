@@ -69,7 +69,7 @@ const Requests = () => {
           {currentRequests.map((request) => (
             <tr key={request.id}>
               <td>{request.id}</td>
-              {/* <td>{request.reson || "N/A"}</td> */}
+              {/* <td>{request.reason || "N/A"}</td> */}
               <td>{request.user.town?.name}</td>
               <td>{request.town?.name}</td>
              
@@ -102,7 +102,7 @@ const Requests = () => {
               <p><strong>Citizen names:</strong> {selectedRequest.user?.firstname} {selectedRequest.user?.lastname}</p>
               <p><strong>Email:</strong> {selectedRequest.user?.email}</p>
               <p><strong>Phone:</strong> {selectedRequest.user?.phone}</p>
-              <p><strong>Reason:</strong> {selectedRequest.reson}</p>
+              <p><strong>Reason:</strong> {selectedRequest.reason}</p>
               <p><strong>Status:</strong> {getStatusBadge(selectedRequest.status)}</p>
               <div style={{ display: "flex", gap: "20px", justifyContent: "space-between" }}>
   {/* Destination Location Card */}
