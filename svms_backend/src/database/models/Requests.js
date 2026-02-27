@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   Requests.init(
     {
       userID: DataTypes.STRING,
-      reson: DataTypes.STRING,
+      reason: DataTypes.STRING,
       status: DataTypes.STRING,
       county_id: { type: DataTypes.INTEGER, allowNull: true },
       district_id: { type: DataTypes.INTEGER, allowNull: true },

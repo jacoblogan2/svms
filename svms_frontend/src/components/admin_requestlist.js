@@ -153,7 +153,7 @@ const Requests = () => {
               <p><strong>Citizen names:</strong> {selectedRequest.user?.firstname} {selectedRequest.user?.lastname}</p>
               <p><strong>Email:</strong> {selectedRequest.user?.email}</p>
               <p><strong>Phone:</strong> {selectedRequest.user?.phone}</p>
-              <p><strong>Reason:</strong> {selectedRequest.reson}</p>
+              <p><strong>Reason:</strong> {selectedRequest.reason}</p>
               <p><strong>Status:</strong> {getStatusBadge(selectedRequest.status)}</p>
               <div style={{ display: "flex", gap: "20px", justifyContent: "space-between" }}>
                 <div style={{ flex: "0 0 48%", padding: "15px", backgroundColor: "whitesmoke", borderRadius: "8px" }}>
