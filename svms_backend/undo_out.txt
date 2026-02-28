@@ -1,0 +1,12 @@
+OUT:\n
+[4mSequelize CLI [Node: 24.4.0, CLI: 6.6.2, ORM: 5.22.5][24m
+
+Loaded configuration file "src\database\config\config.js".
+Using environment "development".
+== z20231208145629-create-district: reverting =======
+
+
+\nERR:\n(node:12692) [DEP0176] DeprecationWarning: fs.R_OK is deprecated, use fs.constants.R_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[31mERROR:[39m cannot drop table "Districts" because other objects depend on it
+[31mERROR DETAIL:[39m constraint Sectors_districtId_fkey on table "Clans" depends on table "Districts"

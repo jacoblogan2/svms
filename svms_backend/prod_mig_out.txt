@@ -1,0 +1,42 @@
+STATUS:
+﻿
+[4mSequelize CLI [Node: 24.4.0, CLI: 6.6.2, ORM: 5.22.5][24m
+
+Loaded configuration file "src\database\config\config.js".
+Using environment "production".
+
+
+
+ERROR:
+﻿node.exe : (node:4820) 
+[DEP0176] 
+DeprecationWarning: 
+fs.R_OK is deprecated, 
+use fs.constants.R_OK 
+instead
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Users\user\AppData\
+Roaming\n ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ((node:4820) [   
+ DE...ts.R_OK inste    
+ad:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+(Use `node 
+--trace-deprecation 
+...` to show where the 
+warning was created)
+[31mERROR:[39m 
+Connection terminated 
+unexpectedly

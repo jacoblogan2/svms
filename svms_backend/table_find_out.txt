@@ -1,0 +1,78 @@
+Results for %village%:
+[
+  {
+    "schema": "public",
+    "table": "Villages_id_seq"
+  },
+  {
+    "schema": "public",
+    "table": "Villages_pkey"
+  },
+  {
+    "schema": "public",
+    "table": "Villages"
+  }
+]
+All User Tables:
+[
+  {
+    "schema": "public",
+    "table": "SequelizeMeta"
+  },
+  {
+    "schema": "public",
+    "table": "Users"
+  },
+  {
+    "schema": "public",
+    "table": "Requests"
+  },
+  {
+    "schema": "public",
+    "table": "Documents"
+  },
+  {
+    "schema": "public",
+    "table": "Notifications"
+  },
+  {
+    "schema": "public",
+    "table": "Posts"
+  },
+  {
+    "schema": "public",
+    "table": "Categories"
+  },
+  {
+    "schema": "public",
+    "table": "Clans"
+  },
+  {
+    "schema": "public",
+    "table": "Districts"
+  },
+  {
+    "schema": "public",
+    "table": "Towns"
+  },
+  {
+    "schema": "public",
+    "table": "Counties"
+  },
+  {
+    "schema": "public",
+    "table": "Sectors"
+  },
+  {
+    "schema": "public",
+    "table": "Cells"
+  },
+  {
+    "schema": "public",
+    "table": "Villages"
+  },
+  {
+    "schema": "public",
+    "table": "Comments"
+  }
+]

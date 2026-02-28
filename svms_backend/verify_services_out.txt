@@ -1,0 +1,7 @@
+Starting service verification...
+Address Hierarchy fetched: 2 counties found.
+First county: Nimba, Districts: 5
+Total users: 2
+Citizens: 1
+Sample citizen: John Doe, County: NULL
+Service verification passed.

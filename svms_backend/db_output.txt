@@ -1,0 +1,22 @@
+{
+  "id": 5,
+  "firstname": "Jacob",
+  "lastname": "Logan",
+  "email": "jac@gmail.com",
+  "password": "$2a$10$AmhM6tt6BicXRoGzHRjJYusGjZntImsyQpKjg.BUwswtx0hpJTmFi",
+  "phone": "0791701099",
+  "gender": "Male",
+  "code": null,
+  "status": "active",
+  "image": null,
+  "role": "admin",
+  "county_id": null,
+  "nid": null,
+  "familyinfo": null,
+  "district_id": null,
+  "clan_id": null,
+  "town_id": null,
+  "village_id": null,
+  "createdAt": "2026-02-25T18:16:41.903Z",
+  "updatedAt": "2026-02-25T18:16:41.903Z"
+}

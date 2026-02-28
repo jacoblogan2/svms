@@ -1,0 +1,46 @@
+Columns in Clans:
+[
+  {
+    "column_name": "id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "districtId",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "createdAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "updatedAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "name",
+    "data_type": "character varying"
+  }
+]
+Columns in Districts:
+[
+  {
+    "column_name": "id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "countyId",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "createdAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "updatedAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "name",
+    "data_type": "character varying"
+  }
+]

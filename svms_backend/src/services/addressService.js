@@ -1,29 +1,45 @@
 import db from "../database/models/index.js";
-const { Counties, Districts, Clans, Towns, Villages,Categories,Users,Posts,Notifications} = db;
+
+const getModels = () => {
+  const { Counties, Districts, Clans, Towns, Villages } = db;
+  if (!Counties || !Districts || !Clans || !Towns || !Villages) {
+    const missing = [];
+    if (!Counties) missing.push("Counties");
+    if (!Districts) missing.push("Districts");
+    if (!Clans) missing.push("Clans");
+    if (!Towns) missing.push("Towns");
+    if (!Villages) missing.push("Villages");
+    console.error(`Missing models in addressService: ${missing.join(", ")}`);
+    throw new Error(`Database error: Missing address models (${missing.join(", ")})`);
+  }
+  return { Counties, Districts, Clans, Towns, Villages };
+};
 
 export const getAllAddressData = async () => {
   try {
+    const { Counties, Districts, Clans, Towns, Villages } = getModels();
+    
     const counties = await Counties.findAll({
       attributes: ["id", "name"],
       include: [
         {
           model: Districts,
-          as: "districts", // Alias for Districts
+          as: "districts",
           attributes: ["id", "name"],
           include: [
             {
               model: Clans,
-              as: "clans", // Alias for Clans
+              as: "clans",
               attributes: ["id", "name"],
               include: [
                 {
                   model: Towns,
-                  as: "towns", // Alias for Towns
+                  as: "towns",
                   attributes: ["id", "name"],
                   include: [
                     {
                       model: Villages,
-                      as: "villages", // Alias for Villages
+                      as: "villages",
                       attributes: ["id", "name"],
                     },
                   ],
@@ -44,6 +60,7 @@ export const getAllAddressData = async () => {
 
 export const getAddressData = async (filters) => {
   try {
+    const { Counties, Districts, Clans, Towns, Villages } = getModels();
     const whereCondition = {};
 
     if (filters.county) {
@@ -93,8 +110,7 @@ export const getAddressData = async (filters) => {
 
     return counties;
   } catch (error) {
-    console.error("Error fetching address data:", error);
+    console.error("Error fetching address data with filters:", error);
     throw error;
   }
 };
-

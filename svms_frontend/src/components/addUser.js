@@ -34,13 +34,18 @@ const AddUser = () => {
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/address`, {
            headers: { Authorization: `Bearer ${token}` }
         });
+        if (!response.ok) {
+           const errorData = await response.json().catch(() => ({}));
+           throw new Error(errorData.message || `Server responded with ${response.status}`);
+        }
         const data = await response.json();
         if (data.success) {
           setCounties(data.data); 
         } else {
-          setMessage("Failed to fetch address data.");
+          setMessage(data.message || "Failed to fetch address data.");
         }
       } catch (error) {
+        console.error("Error fetching address data:", error);
         setMessage("Error fetching address data: " + error.message);
       }
     };

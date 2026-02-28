@@ -1,22 +1,34 @@
+require('dotenv').config();
+const { Sequelize } = require('sequelize');
+const fs = require('fs');
 
-import db from "./src/database/models/index.js";
-const { Users } = db;
+const sequelize = new Sequelize(
+  process.env.DEV_DATABASE_NAME,
+  process.env.DEV_DATABASE_USER,
+  process.env.DEV_DATABASE_PASSWORD,
+  {
+    host: process.env.DEV_DATABASE_HOST,
+    port: process.env.DEV_DATABASE_PORT,
+    dialect: "postgres",
+  }
+);
 
-async function checkColumns() {
+async function check() {
+  const result = [];
   try {
-    const user = await Users.findOne();
-    if (user) {
-      console.log("User data found. Keys:");
-      console.log(Object.keys(user.dataValues));
-    } else {
-      console.log("No user found to check columns.");
-    }
-    process.exit(0);
+    const [results] = await sequelize.query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'Villages'");
+    result.push("Columns in Villages:");
+    result.push(JSON.stringify(results, null, 2));
+    
+    const [results2] = await sequelize.query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'Towns'");
+     result.push("Columns in Towns:");
+    result.push(JSON.stringify(results2, null, 2));
+
   } catch (error) {
-    console.error("Error checking columns:");
-    console.error(error);
-    process.exit(1);
+    result.push(`ERROR: ${error.message}`);
+  } finally {
+    fs.writeFileSync('column_check_out.txt', result.join('\n'));
+    process.exit(0);
   }
 }
-
-checkColumns();
+check();

@@ -1,0 +1,83 @@
+Columns in Users:
+[
+  {
+    "column_name": "id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "gender",
+    "data_type": "USER-DEFINED"
+  },
+  {
+    "column_name": "county_id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "district_id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "clan_id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "town_id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "village_id",
+    "data_type": "integer"
+  },
+  {
+    "column_name": "createdAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "updatedAt",
+    "data_type": "timestamp with time zone"
+  },
+  {
+    "column_name": "image",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "role",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "familyinfo",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "firstname",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "lastname",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "email",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "password",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "phone",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "nid",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "code",
+    "data_type": "character varying"
+  },
+  {
+    "column_name": "status",
+    "data_type": "character varying"
+  }
+]

@@ -1,0 +1,12 @@
+Table [Users] exists (case sensitive)
+Table [users] DOES NOT exist
+Table [Counties] exists (case sensitive)
+Table [counties] DOES NOT exist
+Table [Districts] exists (case sensitive)
+Table [districts] DOES NOT exist
+Table [Clans] exists (case sensitive)
+Table [clans] DOES NOT exist
+Table [Towns] exists (case sensitive)
+Table [towns] DOES NOT exist
+Table [Villages] DOES NOT exist
+Table [villages] DOES NOT exist

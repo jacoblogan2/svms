@@ -8,6 +8,7 @@
     "start": "babel-node  dist/index.js",
     "start:prod": "cross-env NODE_ENV=production nodemon --exec babel-node ./src/index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/index.js",
+    "prebuild": "node clean_dist.js",
     "build": "babel src --out-dir dist --source-maps inline --copy-files",
     "migrate": "npx sequelize-cli db:migrate",
     "down": "npx sequelize-cli db:migrate:undo:all",

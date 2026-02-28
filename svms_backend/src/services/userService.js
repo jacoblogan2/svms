@@ -1,22 +1,28 @@
 import bcrypt from "bcryptjs";
 import db from "../database/models/index.js";
-const {
-  Counties,
-  Districts,
-  Clans,
-  Towns,
-  Villages,
-  Categories,
-  Users,
-  Posts,
-  Notifications,
-  Documents,
-} = db;
+import Sequelize from "sequelize";
 
-import Sequelize, { where } from "sequelize";
+const getModels = () => {
+    const {
+        Counties,
+        Districts,
+        Clans,
+        Towns,
+        Villages,
+        Users,
+        Notifications,
+        Documents,
+    } = db;
+    if (!Users || !Counties || !Districts || !Clans || !Towns || !Villages) {
+        console.error("Missing models in userService:", Object.keys(db).filter(k => !db[k]));
+        throw new Error("Database error: Missing user related models");
+    }
+    return { Counties, Districts, Clans, Towns, Villages, Users, Notifications, Documents };
+};
 
 export const getMyUsers = async (id) => {
   try {
+    const { Counties, Districts, Clans, Towns, Villages, Users, Notifications } = getModels();
     const allUsers = await Users.findAll({
       where: {
         role: "citizen",
@@ -42,6 +48,7 @@ export const getMyUsers = async (id) => {
 
 export const getUsers = async () => {
   try {
+    const { Counties, Districts, Clans, Towns, Villages, Users, Notifications, Documents } = getModels();
     const allUsers = await Users.findAll({
       attributes: { exclude: ["password"] },
       include: [
@@ -65,8 +72,10 @@ export const getUsers = async () => {
     throw error;
   }
 };
+
 export const getalldocuments = async (userID) => {
   try {
+    const { Counties, Districts, Clans, Towns, Villages, Users, Notifications, Documents } = getModels();
     const allUsers = await Users.findAll({
       where: { id: userID },
       attributes: { exclude: ["password"] },
@@ -92,56 +101,22 @@ export const getalldocuments = async (userID) => {
   }
 };
 
-export const getUsers1 = async () => {
-  try {
-    const allUsers = await Users.findAll({
-      where: { role: "user" },
-      attributes: { exclude: ["password"] },
-      include: [
-        {
-          model: db.ProfileDetails,
-          as: "ProfileDetails",
-          include: [{ model: db.ProfileCategories, as: "category" }],
-        },
-        { model: db.Missions, as: "missions" },
-        { model: db.Appointments, as: "appointments" },
-        { model: Notifications, as: "notifications" },
-        {
-          model: db.Department,
-          as: "department",
-          include: [
-            {
-              model: Users,
-              as: "reader",
-              attributes: { exclude: ["password"] },
-            },
-          ],
-        },
-      ],
-    });
-
-    return allUsers;
-  } catch (error) {
-    console.error("Error fetching users1:", error);
-    throw error;
-  }
-};
-
 export const createUser = async (user) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
-  const newUser = await Users.create(user);
+  const newUser = await db.Users.create(user);
   return newUser;
 };
 
 export const createUserCustomer = async (user) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
-  const newUser = await Users.create(user);
+  const newUser = await db.Users.create(user);
   return newUser;
 };
 
 export const getUser = async (id) => {
+  const { Counties, Districts, Clans, Towns, Villages, Users, Notifications, Documents } = getModels();
   const user = await Users.findByPk(id, {
     attributes: { exclude: ["password"] },
     include: [
@@ -162,6 +137,7 @@ export const getUser = async (id) => {
 };
 
 export const GetUserPassword = async (id) => {
+    const { Users } = getModels();
   const user = await Users.findByPk(id, {
     attributes: ["password"],
   });
@@ -170,6 +146,7 @@ export const GetUserPassword = async (id) => {
 
 export const getUserByEmail = async (email) => {
   try {
+    const { Users } = getModels();
     const user = await Users.findOne({
       where: { email },
     });
@@ -182,6 +159,7 @@ export const getUserByEmail = async (email) => {
 
 export const getUserByNid = async (nid) => {
   try {
+    const { Users } = getModels();
     const user = await Users.findOne({
       where: { nid },
     });
@@ -194,6 +172,7 @@ export const getUserByNid = async (nid) => {
 
 export const getUserByPhone = async (phone) => {
   try {
+    const { Users } = getModels();
     const user = await Users.findOne({
       where: { phone },
     });
@@ -205,6 +184,7 @@ export const getUserByPhone = async (phone) => {
 };
 
 export const getallUsers = async () => {
+    const { Counties, Districts, Clans, Towns, Villages, Users, Notifications } = getModels();
   const allUsers = await Users.findAll({
     attributes: { exclude: ["password"] },
     include: [
@@ -220,6 +200,7 @@ export const getallUsers = async () => {
 };
 
 export const updateUser = async (id, user) => {
+    const { Users } = getModels();
   const userToUpdate = await Users.findOne({
     where: { id },
     attributes: { exclude: ["password"] },
@@ -232,6 +213,7 @@ export const updateUser = async (id, user) => {
 };
 
 export const deleteUser = async (id) => {
+    const { Users } = getModels();
   const userToDelete = await Users.findOne({ where: { id } });
   if (userToDelete) {
     await Users.destroy({ where: { id } });
@@ -241,6 +223,7 @@ export const deleteUser = async (id) => {
 };
 
 export const activateUser = async (id) => {
+    const { Users } = getModels();
   const userToActivate = await Users.findOne({
     where: { id },
     attributes: { exclude: ["password"] },
@@ -253,6 +236,7 @@ export const activateUser = async (id) => {
 };
 
 export const deactivateUser = async (id) => {
+    const { Users } = getModels();
   const userToDeactivate = await Users.findOne({
     where: { id },
     attributes: { exclude: ["password"] },
@@ -265,6 +249,7 @@ export const deactivateUser = async (id) => {
 };
 
 export const updateUserCode = async (email, user) => {
+    const { Users } = getModels();
   const userToUpdate = await Users.findOne({
     where: { email },
     attributes: { exclude: ["password"] },
@@ -278,6 +263,7 @@ export const updateUserCode = async (email, user) => {
 
 export const getUserByCode = async (email, code) => {
   try {
+    const { Users } = getModels();
     const user = await Users.findOne({
       where: { code: code, email: email },
     });
@@ -287,3 +273,4 @@ export const getUserByCode = async (email, code) => {
     throw error;
   }
 };
+
