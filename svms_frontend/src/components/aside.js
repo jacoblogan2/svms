@@ -39,7 +39,8 @@ function Sidebar() {
           { label: "Add Leaders Users", icon: "bi-person-plus", link: "../addusers" },
           { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
           { label: "Manage Post Types", icon: "bi-tags", link: "../post_type" },
-          
+          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
+          { label: "Family Records", icon: "bi-people-fill", link: "../family" },
         ],
       },
       {
@@ -76,6 +77,7 @@ function Sidebar() {
           { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
           { label: "View Districts & Leaders", icon: "bi-person-lines-fill", link: "../users" },
           { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
         ],
       },
       {
@@ -113,6 +115,7 @@ function Sidebar() {
           { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
           { label: "View Leaders", icon: "bi-person-lines-fill", link: "../users" },
           { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
         ],
       },
       {
@@ -148,6 +151,7 @@ function Sidebar() {
         category: "Community",
         items: [
           { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
         ],
       },
       {
@@ -184,6 +188,7 @@ function Sidebar() {
           { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
           { label: "View Village Leaders", icon: "bi-person-lines-fill", link: "../users" },
           { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
         ],
       },
       {
@@ -224,7 +229,9 @@ function Sidebar() {
       {
         category: "Access",
         items: [{ label: "View Village Citizens", icon: "bi-person-badge", link: "../users" },
-          { label: "Add Citizen", icon: "bi-person", link: "../addcitizen" }
+          { label: "Add Citizen", icon: "bi-person", link: "../addcitizen" },
+          { label: "Household Records", icon: "bi-house-door", link: "../family" },
+          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
         ],
       },
       {
@@ -252,6 +259,7 @@ function Sidebar() {
         category: "Activities",
         items: [
           { label: "Request", icon: "bi-exclamation-circle", link: "../request" },
+          { label: "Household & Family", icon: "bi-house-door", link: "../family" },
           { label: "Notifications", icon: "bi-bell", link: "../notifications" },
         ],
       },

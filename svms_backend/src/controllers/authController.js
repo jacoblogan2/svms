@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { getUserByEmail } from "../services/userService.js";
+import db from "../database/models/index.js";
+const { RolePermissions, Permissions } = db;
 
 
 
@@ -38,6 +40,13 @@ export const login = async (req, res) => {
       message: "Your account is not active",
     });
   }
+  // Fetch permissions for the role
+  const rolePermissions = await RolePermissions.findAll({
+    where: { role: user.role },
+    include: [{ model: Permissions, as: "permission" }],
+  });
+  const permissions = rolePermissions.map((rp) => rp.permission.name);
+
   return res.status(200).json({
     success: true,
     message: "User logged in successfully",
@@ -54,11 +63,12 @@ export const login = async (req, res) => {
       gender: user.gender,
       address: user.address,
       image: user.image,
-      county_id:user.county_id,
-      district_id:user.district_id,
-      clan_id:user.clan_id,
-      town_id:user.town_id,
-      village_id:user.village_id,
+      county_id: user.county_id,
+      district_id: user.district_id,
+      clan_id: user.clan_id,
+      town_id: user.town_id,
+      village_id: user.village_id,
+      permissions: permissions, // Added permissions to the user object
     },
   });
 };

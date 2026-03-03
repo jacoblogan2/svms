@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/header';
-import Sidebar from './components/aside';
+import Aside from './components/aside'; // Changed from Sidebar to Aside
 import Home from './pages/admin/home';
 import Users from './pages/admin/users';
 import Login from './components/login';
@@ -28,6 +28,9 @@ import RequestAdmin from './pages/admin/AdminRequest_Page'
 import AddPost from './pages/admin/AddPostPage'
 import Citizens from './pages/admin/usersCitizens'
 import Map from './pages/admin/map_page'
+import LeaderDashboard from './pages/leaders/LeaderDashboard'; // New import
+import FamilyManagement from './pages/citizen/FamilyManagement';
+import ReportingModule from './pages/leaders/ReportingModule';
 
 import './components/style.css';
 
@@ -65,6 +68,11 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
   }
 };
 
+const DashboardWrapper = () => {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  return user.role === 'admin' ? <Statistics /> : <LeaderDashboard />;
+};
+
 const MainLayout = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login' || location.pathname === '/reset' || location.pathname.startsWith('/code/') || location.pathname.startsWith('/resetPassword/');
@@ -72,7 +80,7 @@ const MainLayout = () => {
   return (
     <div className="App">
       {!isLoginPage && <Header />}
-      {!isLoginPage && <Sidebar />}
+      {!isLoginPage && <Aside />}
       <div className={`content-wrapper ${isLoginPage ? 'login-page' : ''}`}>
         <Routes>
           
@@ -111,7 +119,6 @@ const MainLayout = () => {
             </ProtectedRoute>
           } />
           <Route path="/citizenpost" element={<PostCitizen />} />
-          <Route path="/statistics" element={<Statistics />} />
           <Route path="/post/:id"  element={<PostView />} />
           <Route path="/request"  element={<Request />} />
           <Route path="/request/admin"  element={
@@ -124,6 +131,30 @@ const MainLayout = () => {
               <AddPost />
             </ProtectedRoute>
           } />
+          <Route 
+            path="/statistics" 
+            element={
+              <ProtectedRoute allowedRoles={ALL_LEADERS}>
+                <DashboardWrapper />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/family" 
+            element={
+              <ProtectedRoute allowedRoles={['citizen', 'admin', 'village_leader']}>
+                <FamilyManagement />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/reports" 
+            element={
+              <ProtectedRoute allowedRoles={ALL_LEADERS}>
+                <ReportingModule />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/citizens" element={
             <ProtectedRoute allowedRoles={[...ALL_LEADERS, 'clan_leader']}>
               <Citizens />

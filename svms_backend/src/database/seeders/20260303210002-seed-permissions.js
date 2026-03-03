@@ -29,6 +29,12 @@ module.exports = {
       { name: 'manage_regions',    description: 'Manage counties, districts, towns, villages' },
       { name: 'suspend_users',     description: 'Activate or deactivate user accounts' },
       { name: 'view_notifications', description: 'View notifications' },
+      { name: 'manage_family',      description: 'Manage household and family records' },
+      { name: 'view_households',   description: 'View household/family records in jurisdiction' },
+      { name: 'create_report',     description: 'Generate structured administrative reports' },
+      { name: 'view_reports',      description: 'View generated administrative reports' },
+      { name: 'register_birth',    description: 'Register a new birth in the household/village' },
+      { name: 'mark_deceased',    description: 'Record a death in the household/village' },
     ];
 
     await queryInterface.bulkInsert(
@@ -50,40 +56,47 @@ module.exports = {
         'view_leaders', 'view_citizens', 'approve_request', 'reject_request',
         'send_broadcast', 'manage_post_type', 'view_broadcasts',
         'manage_documents', 'view_all_reports', 'manage_regions',
-        'suspend_users', 'view_notifications',
+        'suspend_users', 'view_notifications', 
+        'view_households', 'create_report', 'view_reports', 'manage_family', 'register_birth', 'mark_deceased',
       ],
       county_leader: [
         'view_dashboard', 'view_statistics', 'create_user', 'manage_users',
         'view_leaders', 'view_citizens', 'approve_request', 'reject_request',
         'send_broadcast', 'view_broadcasts', 'escalate_issue',
         'manage_documents', 'view_all_reports', 'view_notifications',
+        'view_households', 'create_report', 'view_reports',
       ],
       district_leader: [
         'view_dashboard', 'view_statistics', 'create_user', 'manage_users',
         'view_leaders', 'view_citizens', 'approve_request', 'reject_request',
         'send_broadcast', 'view_broadcasts', 'escalate_issue',
         'manage_documents', 'view_all_reports', 'view_notifications',
+        'view_households', 'create_report', 'view_reports',
       ],
       clan_leader: [
         'view_dashboard', 'view_statistics', 'view_citizens',
         'send_broadcast', 'view_broadcasts', 'escalate_issue',
         'view_notifications',
+        'view_households', 'create_report', 'view_reports',
       ],
       town_leader: [
         'view_dashboard', 'view_statistics', 'create_user', 'manage_users',
         'view_leaders', 'view_citizens', 'approve_request', 'reject_request',
         'send_broadcast', 'view_broadcasts', 'escalate_issue',
         'view_notifications',
+        'view_households', 'create_report', 'view_reports',
       ],
       village_leader: [
         'view_dashboard', 'view_statistics', 'create_user', 'manage_users',
         'view_citizens', 'approve_request', 'reject_request',
         'send_broadcast', 'view_broadcasts', 'escalate_issue',
         'manage_documents', 'view_notifications',
+        'view_households', 'create_report', 'view_reports', 'register_birth', 'mark_deceased',
       ],
       citizen: [
         'view_dashboard', 'view_statistics', 'submit_request',
         'view_broadcasts', 'manage_documents', 'view_notifications',
+        'manage_family', 'register_birth', 'mark_deceased',
       ],
     };
 
