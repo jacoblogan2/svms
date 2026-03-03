@@ -52,7 +52,7 @@ import {
       }
   
       if (role=="town_leader") {
-        req.body.status='approvedbycell'
+        req.body.status='approvedbytown'
       }
       if (role=="village_leader") {
         req.body.status='approvedbyvillage'
@@ -149,13 +149,13 @@ import {
         statusArray = ["approved","rejected"];
         data = await getAllPostes_forlocation("district_id", district_id, statusArray);
       } else if (role === "clan_leader") {
-        statusArray = ["approvedbycell","rejectedbysector","approved"];
+        statusArray = ["approvedbytown","rejectedbyclan","approved"];
         data = await getAllPostes_forlocation("clan_id", clan_id, statusArray);
       } else if (role === "town_leader") {
-        statusArray = ["approvedbyvillage","approvedbycell","rejectedbycell","approvedbysector","rejectedbysector","approved"];
+        statusArray = ["approvedbyvillage","approvedbytown","rejectedbytown","approvedbyclan","rejectedbyclan","approved"];
         data = await getAllPostes_forlocation("town_id", town_id, statusArray);
       } else if (role === "village_leader") {
-        statusArray = ["approved","pending","approvedbycell","rejectedbycell","approvedbyvillage","rejectedbyvillage","rejectedbysector","approvedbysector"];
+        statusArray = ["approved","pending","approvedbytown","rejectedbytown","approvedbyvillage","rejectedbyvillage","rejectedbyclan","approvedbyclan"];
         data = await getAllPostes_forlocation("village_id", village_id, statusArray);
       }
   
@@ -331,7 +331,7 @@ import {
       }
   
       if (role=="town_leader") {
-        req.body.status='approvedbycell'
+        req.body.status='approvedbytown'
       }
       if (role=="village_leader") {
         req.body.status='approvedbyvillage'
@@ -378,7 +378,7 @@ import {
       }
   
       if (role=="town_leader") {
-        req.body.status='rejectedbycell'
+        req.body.status='rejectedbytown'
       }
       if (role=="village_leader") {
         req.body.status='rejectedbyvillage'

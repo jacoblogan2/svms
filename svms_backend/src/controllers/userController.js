@@ -23,6 +23,7 @@ import {
 } from "../services/NotificationService.js";
 import db from "../database/models/index.js";
 import imageUploader from "../helpers/imageUplouder.js";
+import { getLocationScope, outranks } from "../middlewares/roleConfig.js";
 
 const getModels = () => {
   const { Requests, Counties, Districts, Clans, Towns, Villages, Categories, Users, Posts, Notifications, Documents } = db;
@@ -115,6 +116,14 @@ export const addUser = async (req, res) => {
   }
   if (!req.body.phone || req.body.phone === "") {
     return res.status(400).json({ success: false, message: "Please provide phone" });
+  }
+
+  // Validate role hierarchy: creator must outrank the new user
+  if (req.user.role !== 'admin' && !outranks(req.user.role, req.body.role)) {
+    return res.status(403).json({
+      success: false,
+      message: "You cannot create a user with equal or higher role than yours",
+    });
   }
 
   console.log(req.body);
@@ -270,29 +279,35 @@ export const SignUp = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     let users = await getUsers();
+    const locationScope = getLocationScope(req.user);
 
-    if (req.user.role == 'village_leader') {
-      let myusers = await getMyUsers(req.user.village_id);
+    if (req.user.role === 'admin') {
+      // Admin sees all non-citizen users (leaders list)
+      let leaders = users.filter(user => user.role !== "citizen" && user.id !== req.user.id);
       return res.status(200).json({
         success: true,
         message: "Users retrieved successfully",
-        users: myusers,
+        users: leaders,
       });
     }
 
-    if (req.user.role == 'admin') {
-      let citizens = users.filter(user => user.role !== "citizen" && user.id !== req.user.id);
-      return res.status(200).json({
-        success: true,
-        message: "Users retrieved successfully",
-        users: citizens,
-      });
-    }
+    // All leader roles: filter by location scope and exclude self
+    let filteredUsers = users.filter(user => {
+      if (user.id === req.user.id) return false;
+      // Apply location scope filtering
+      for (const [key, value] of Object.entries(locationScope)) {
+        if (user[key] !== value) return false;
+      }
+      return true;
+    });
+
+    // Non-admin leaders see leaders below them (not citizens)
+    filteredUsers = filteredUsers.filter(user => user.role !== "citizen");
 
     return res.status(200).json({
       success: true,
       message: "Users retrieved successfully",
-      users: users,
+      users: filteredUsers,
     });
   } catch (error) {
     console.error("Error in getAllUsers:", error);
@@ -312,8 +327,12 @@ export const getCitizen = async (req, res) => {
       throw new Error("Users model not loaded");
     }
 
+    // Build WHERE clause: always filter by citizen role + location scope
+    const locationScope = getLocationScope(req.user);
+    const whereClause = { role: "citizen", ...locationScope };
+
     const citizens = await Users.findAll({
-      where: { role: "citizen" },
+      where: whereClause,
       attributes: { exclude: ["password"] },
       include: [
         { model: Counties, as: "county", required: false },
@@ -594,9 +613,15 @@ export const getRequests = async (req, res) => {
     ];
 
     if (req.user.role === "admin") {
+      // Admin sees all requests
       requests = await Requests.findAll({ include: includeOptions });
-    } else {
+    } else if (req.user.role === "citizen") {
+      // Citizens see only their own requests
       requests = await Requests.findAll({ where: { userID: req.user.id }, include: includeOptions });
+    } else {
+      // Leaders see requests within their location scope
+      const locationScope = getLocationScope(req.user);
+      requests = await Requests.findAll({ where: locationScope, include: includeOptions });
     }
 
     if (!requests || requests.length === 0) {

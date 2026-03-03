@@ -169,13 +169,13 @@ const options = {
                 lastname: "Doe",
                 email: "test@example.com",
                 phone: "08012345678",
-                role: "province_leader,district_leader,sector_leader,cell_leader,village_leader,admin",
+                role: "county_leader,district_leader,clan_leader,town_leader,village_leader,admin",
                 gender: "Male",
                 address: "Gatsata",
-                province_id:"1",
+                county_id:"1",
                 district_id:"1",
-                sector_id:"1",
-                cell_id:"1",
+                clan_id:"1",
+                town_id:"1",
                 village_id:"1",
              
               },
@@ -726,10 +726,10 @@ const options = {
              
               example: {
                 reason:"1",
-                province_id:"1",
+                county_id:"1",
                 district_id:"1",
-                sector_id:"1",
-                cell_id:"1",
+                clan_id:"1",
+                town_id:"1",
                 village_id:"1",
                
               },
@@ -1675,21 +1675,21 @@ const options = {
             type: "string",
             description: "User's confirm password",
           },
-          province_id: {
+          county_id: {
             type: "string",
-            description: "User's province_id",
+            description: "User's county_id",
           },
           district_id: {
             type: "string",
             description: "User's district_id",
           },
-          sector_id: {
+          clan_id: {
             type: "string",
-            description: "User's sector_id",
+            description: "User's clan_id",
           },
-          cell_id: {
+          town_id: {
             type: "string",
-            description: "User's cell_id",
+            description: "User's town_id",
           },
           village_id: {
             type: "string",
@@ -1717,21 +1717,21 @@ const options = {
             description: "post image",
             format: "binary",
           },
-          // province_id: {
+          // county_id: {
           //   type: "string",
-          //   description: "post's province_id",
+          //   description: "post's county_id",
           // },
           // district_id: {
           //   type: "string",
           //   description: "post's district_id",
           // },
-          // sector_id: {
+          // clan_id: {
           //   type: "string",
-          //   description: "post's sector_id",
+          //   description: "post's clan_id",
           // },
-          // cell_id: {
+          // town_id: {
           //   type: "string",
-          //   description: "post's cell_id",
+          //   description: "post's town_id",
           // },
           // village_id: {
           //   type: "string",

@@ -80,7 +80,7 @@ export const addPostController = async (req, res) => {
     if (role === "admin" || role === "county_leader" || role === "district_leader" || role === "clan_leader") {
       req.body.status = 'approved';
     } else if (role === "town_leader") {
-      req.body.status = 'approvedbycell';
+      req.body.status = 'approvedbytown';
     } else if (role === "village_leader") {
       if (!county_id || !district_id || !clan_id || !town_id || !village_id) {
         return res.status(400).json({
@@ -333,13 +333,13 @@ export const PostWithAllController = async (req, res) => {
       statusArray = ["approved","rejected"];
       data = await getAllPostes_forlocation("district_id", district_id, statusArray);
     } else if (role === "clan_leader") {
-      statusArray = ["approvedbycell","rejectedbysector","approved","rejected"];
+      statusArray = ["approvedbytown","rejectedbyclan","approved","rejected"];
       data = await getAllPostes_forlocation("clan_id", clan_id, statusArray);
     } else if (role === "town_leader") {
-      statusArray = ["approvedbyvillage","approvedbycell","rejectedbycell","approvedbysector","rejectedbysector","approved","rejected"];
+      statusArray = ["approvedbyvillage","approvedbytown","rejectedbytown","approvedbyclan","rejectedbyclan","approved","rejected"];
       data = await getAllPostes_forlocation("town_id", town_id, statusArray);
     } else if (role === "village_leader") {
-      statusArray = ["approved","pending","approvedbycell","rejectedbycell","approvedbyvillage","rejectedbyvillage","rejectedbysector","approvedbysector","rejected"];
+      statusArray = ["approved","pending","approvedbytown","rejectedbytown","approvedbyvillage","rejectedbyvillage","rejectedbyclan","approvedbyclan","rejected"];
       data = await getAllPostes_forlocation("village_id", village_id, statusArray);
     
   } else if (role === "citizen") {
@@ -627,7 +627,7 @@ export const approvePostController = async (req, res) => {
     const { id } = req.params;
     const userID = req.user.id;
     const role = req.user.role;
-    const { province_id, district_id, sector_id, cell_id, village_id } = req.user;
+    const { county_id, district_id, clan_id, town_id, village_id } = req.user;
 
     const data = await getOnePostWithDetails(id);
     if (!data) {
@@ -641,7 +641,7 @@ export const approvePostController = async (req, res) => {
     if (role === 'admin' || role === 'county_leader' || role === 'district_leader' || role === 'clan_leader') {
       status = 'approved';
     } else if (role === 'town_leader') {
-      status = 'approvedbycell';
+      status = 'approvedbytown';
     } else if (role === 'village_leader') {
       status = 'approved';
     }
@@ -655,28 +655,28 @@ export const approvePostController = async (req, res) => {
       });
     }
 
-    // Determine the target users for notification (both up and down)
+    // Determine the target users for notification (escalate upward)
     let targetUsers = [];
     if (role === 'village_leader') {
-      targetUsers = await Users.findAll({ where: { role: 'cell_leader', village_id } });
-    } else if (role === 'cell_leader') {
-      targetUsers = await Users.findAll({ where: { role: 'sector_leader', sector_id } });
-    } else if (role === 'sector_leader') {
+      targetUsers = await Users.findAll({ where: { role: 'town_leader', town_id } });
+    } else if (role === 'town_leader') {
+      targetUsers = await Users.findAll({ where: { role: 'clan_leader', clan_id } });
+    } else if (role === 'clan_leader') {
       targetUsers = await Users.findAll({ where: { role: 'district_leader', district_id } });
     } else if (role === 'district_leader') {
-      targetUsers = await Users.findAll({ where: { role: 'province_leader', province_id } });
+      targetUsers = await Users.findAll({ where: { role: 'county_leader', county_id } });
     }
 
     // Notify down (for leaders at the lower levels)
     let downUsers = [];
-    if (role === 'province_leader') {
-      downUsers = await Users.findAll({ where: { role: 'district_leader', province_id } });
+    if (role === 'county_leader') {
+      downUsers = await Users.findAll({ where: { role: 'district_leader', county_id } });
     } else if (role === 'district_leader') {
-      downUsers = await Users.findAll({ where: { role: 'sector_leader', district_id } });
-    } else if (role === 'sector_leader') {
-      downUsers = await Users.findAll({ where: { role: 'cell_leader', sector_id } });
-    } else if (role === 'cell_leader') {
-      downUsers = await Users.findAll({ where: { role: 'village_leader', cell_id } });
+      downUsers = await Users.findAll({ where: { role: 'clan_leader', district_id } });
+    } else if (role === 'clan_leader') {
+      downUsers = await Users.findAll({ where: { role: 'town_leader', clan_id } });
+    } else if (role === 'town_leader') {
+      downUsers = await Users.findAll({ where: { role: 'village_leader', town_id } });
     }
 
     // Send notifications to the target users
@@ -720,7 +720,7 @@ export const rejectPostController = async (req, res) => {
     const { id } = req.params;
     const userID = req.user.id;
     const role = req.user.role;
-    const { province_id, district_id, sector_id, cell_id, village_id } = req.user;
+    const { county_id, district_id, clan_id, town_id, village_id } = req.user;
 
     const data = await getOnePostWithDetails(id);
     if (!data) {
@@ -734,7 +734,7 @@ export const rejectPostController = async (req, res) => {
     if (role === 'admin' || role === 'county_leader' || role === 'district_leader' || role === 'clan_leader') {
       status = 'rejected';
     } else if (role === 'town_leader') {
-      status = 'rejectedbycell';
+      status = 'rejectedbytown';
     } else if (role === 'village_leader') {
       status = 'rejectedbyvillage';
     }
@@ -748,28 +748,28 @@ export const rejectPostController = async (req, res) => {
       });
     }
 
-    // Determine the target users for notification (both up and down)
+    // Determine the target users for notification (escalate upward)
     let targetUsers = [];
     if (role === 'village_leader') {
-      targetUsers = await Users.findAll({ where: { role: 'cell_leader', village_id } });
-    } else if (role === 'cell_leader') {
-      targetUsers = await Users.findAll({ where: { role: 'sector_leader', sector_id } });
-    } else if (role === 'sector_leader') {
+      targetUsers = await Users.findAll({ where: { role: 'town_leader', town_id } });
+    } else if (role === 'town_leader') {
+      targetUsers = await Users.findAll({ where: { role: 'clan_leader', clan_id } });
+    } else if (role === 'clan_leader') {
       targetUsers = await Users.findAll({ where: { role: 'district_leader', district_id } });
     } else if (role === 'district_leader') {
-      targetUsers = await Users.findAll({ where: { role: 'province_leader', province_id } });
+      targetUsers = await Users.findAll({ where: { role: 'county_leader', county_id } });
     }
 
     // Notify down (for leaders at the lower levels)
     let downUsers = [];
-    if (role === 'province_leader') {
-      downUsers = await Users.findAll({ where: { role: 'district_leader', province_id } });
+    if (role === 'county_leader') {
+      downUsers = await Users.findAll({ where: { role: 'district_leader', county_id } });
     } else if (role === 'district_leader') {
-      downUsers = await Users.findAll({ where: { role: 'sector_leader', district_id } });
-    } else if (role === 'sector_leader') {
-      downUsers = await Users.findAll({ where: { role: 'cell_leader', sector_id } });
-    } else if (role === 'cell_leader') {
-      downUsers = await Users.findAll({ where: { role: 'village_leader', cell_id } });
+      downUsers = await Users.findAll({ where: { role: 'clan_leader', district_id } });
+    } else if (role === 'clan_leader') {
+      downUsers = await Users.findAll({ where: { role: 'town_leader', clan_id } });
+    } else if (role === 'town_leader') {
+      downUsers = await Users.findAll({ where: { role: 'village_leader', town_id } });
     }
 
     // Send notifications to the target users

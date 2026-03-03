@@ -15,6 +15,7 @@ import {
   getCitizen
 } from '../controllers/userController.js';
 import { protect } from '../middlewares/protect.js';
+import { checkRole, checkPermission } from '../middlewares/rbac.js';
 import multer from 'multer';
 import {
   addRequest,
@@ -32,12 +33,12 @@ const upload = multer({ dest: 'uploads/' });
 router.get('/', protect, getAllUsers);
 router.get('/citizen', protect, getCitizen);
 router.get('/:id', protect, getOneUser);
-router.post('/addUser', protect, addUser);
+router.post('/addUser', protect, checkPermission('create_user'), addUser);
 router.post('/signup', SignUp);
 router.put('/update/:id', protect, updateOneUser);
-router.delete('/delete/:id', protect, deleteOneUser);
-router.put('/activate/:id', protect, activateOneUser);
-router.put('/deactivate/:id', protect, deactivateOneUser);
+router.delete('/delete/:id', protect, checkRole('admin'), deleteOneUser);
+router.put('/activate/:id', protect, checkPermission('suspend_users'), activateOneUser);
+router.put('/deactivate/:id', protect, checkPermission('suspend_users'), deactivateOneUser);
 router.put('/changePassword', protect, changePassword);
 
 router.post('/check', checkEmail);
@@ -46,8 +47,8 @@ router.put('/resetPassword/:email', ResetPassword);
 
 // Request Routes
 router.post('/requests', protect, addRequest);
-router.put('/requests/approve/:requestID', protect, approveRequest);
-router.put('/requests/reject/:requestID', protect, rejectRequest);
+router.put('/requests/approve/:requestID', protect, checkPermission('approve_request'), approveRequest);
+router.put('/requests/reject/:requestID', protect, checkPermission('reject_request'), rejectRequest);
 router.get('/requests/all', protect, getRequests);
 
 router.post("/my/document",protect, addDocument);
@@ -55,3 +56,4 @@ router.get("/my/document", protect,viewMyDocuments);
 router.delete("/documents/:id",protect, deleteDocument);
 
 export default router;
+

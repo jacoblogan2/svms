@@ -18,6 +18,25 @@ export const protect = asyncHandler(async (req, res, next) => {
         attributes: { exclude: ["password"] },
       });
 
+      // Pre-load user permissions from RolePermissions table (if available)
+      try {
+        const RolePermissions = db["RolePermissions"];
+        const Permissions = db["Permissions"];
+        if (RolePermissions && Permissions && req.user) {
+          const rolePerms = await RolePermissions.findAll({
+            where: { role: req.user.role },
+            include: [{ model: Permissions, as: "permission" }],
+          });
+          req.user.permissions = rolePerms.map(
+            (rp) => rp.permission && rp.permission.name
+          ).filter(Boolean);
+        }
+      } catch (permError) {
+        // RBAC tables may not exist yet — don't block auth
+        console.warn("Could not load permissions (tables may not exist yet):", permError.message);
+        req.user.permissions = [];
+      }
+
       return next();
     } catch (error) {
       console.error("JWT Verification Error:", error);

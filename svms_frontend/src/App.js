@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/header';
 import Sidebar from './components/aside';
 import Home from './pages/admin/home';
@@ -31,6 +31,40 @@ import Map from './pages/admin/map_page'
 
 import './components/style.css';
 
+// Role labels for display
+const ROLE_LABELS = {
+  admin: "Admin",
+  county_leader: "County Leader",
+  district_leader: "District Leader",
+  clan_leader: "Clan Leader",
+  town_leader: "Town Leader",
+  village_leader: "Village Leader",
+  citizen: "Citizen",
+};
+
+// All leader roles (used in route protection)
+const ALL_LEADERS = ['admin', 'county_leader', 'district_leader', 'clan_leader', 'town_leader', 'village_leader'];
+const MANAGE_LEADERS = ['admin', 'county_leader', 'district_leader', 'town_leader'];
+
+/**
+ * ProtectedRoute: wraps a page component and redirects to /statistics
+ * if the user's role is not in the allowedRoles list.
+ */
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const userString = localStorage.getItem("user");
+  if (!userString) return <Navigate to="/login" replace />;
+  
+  try {
+    const user = JSON.parse(userString);
+    if (!allowedRoles.includes(user.role)) {
+      return <Navigate to="/statistics" replace />;
+    }
+    return children;
+  } catch {
+    return <Navigate to="/login" replace />;
+  }
+};
+
 const MainLayout = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login' || location.pathname === '/reset' || location.pathname.startsWith('/code/') || location.pathname.startsWith('/resetPassword/');
@@ -42,23 +76,59 @@ const MainLayout = () => {
       <div className={`content-wrapper ${isLoginPage ? 'login-page' : ''}`}>
         <Routes>
           
-          <Route path="/users" element={<Users />} />
+          {/* Users / Leaders list — admin + leaders who can view subordinates */}
+          <Route path="/users" element={
+            <ProtectedRoute allowedRoles={ALL_LEADERS}>
+              <Users />
+            </ProtectedRoute>
+          } />
           <Route path="/oneUser/:id" element={<OneUser />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profilecitizen" element={<ProfileCitizen />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/addusers" element={<AddLeader />} />
-          <Route path="/post_type" element={<PostType />} />
+
+          {/* Add users — requires create_user permission (admin + leaders) */}
+          <Route path="/addusers" element={
+            <ProtectedRoute allowedRoles={MANAGE_LEADERS}>
+              <AddLeader />
+            </ProtectedRoute>
+          } />
+
+          {/* Manage Post Types — admin only */}
+          <Route path="/post_type" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <PostType />
+            </ProtectedRoute>
+          } />
+
           <Route path="/notifications" element={<Notification />} />
+
+          {/* Broadcasts — leaders can create, everyone can view */}
           <Route path="/post" element={<Post />} />
-          <Route path="/addcitizen" element={<AddCitizen />} />
+          <Route path="/addcitizen" element={
+            <ProtectedRoute allowedRoles={ALL_LEADERS}>
+              <AddCitizen />
+            </ProtectedRoute>
+          } />
           <Route path="/citizenpost" element={<PostCitizen />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/post/:id"  element={<PostView />} />
           <Route path="/request"  element={<Request />} />
-          <Route path="/request/admin"  element={<RequestAdmin />} />
-          <Route path="/addpost"  element={<AddPost />} />
-          <Route path="/citizens"  element={<Citizens />} />
+          <Route path="/request/admin"  element={
+            <ProtectedRoute allowedRoles={ALL_LEADERS}>
+              <RequestAdmin />
+            </ProtectedRoute>
+          } />
+          <Route path="/addpost" element={
+            <ProtectedRoute allowedRoles={ALL_LEADERS}>
+              <AddPost />
+            </ProtectedRoute>
+          } />
+          <Route path="/citizens" element={
+            <ProtectedRoute allowedRoles={[...ALL_LEADERS, 'clan_leader']}>
+              <Citizens />
+            </ProtectedRoute>
+          } />
 
           <Route path="/map"  element={<Map/>} />
     
@@ -87,4 +157,6 @@ function App() {
   );
 }
 
+export { ROLE_LABELS };
 export default App;
+

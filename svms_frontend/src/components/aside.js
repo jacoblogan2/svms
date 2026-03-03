@@ -62,6 +62,151 @@ function Sidebar() {
       },
     ],
 
+    county_leader: [
+      {
+        category: "Dashboard",
+        items: [
+          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
+          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
+        ],
+      },
+      {
+        category: "Management",
+        items: [
+          { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
+          { label: "View Districts & Leaders", icon: "bi-person-lines-fill", link: "../users" },
+          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+        ],
+      },
+      {
+        category: "Communication",
+        items: [
+          { label: "Add Broadcast", icon: "bi-pencil-square", link: "../addpost" },
+          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
+          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
+        ],
+      },
+      {
+        category: "Activities",
+        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
+      },
+      {
+        category: "Settings",
+        items: [
+          { label: "Settings", icon: "bi-gear", link: "../profile" },
+          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
+        ],
+      },
+    ],
+
+    district_leader: [
+      {
+        category: "Dashboard",
+        items: [
+          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
+          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
+        ],
+      },
+      {
+        category: "Management",
+        items: [
+          { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
+          { label: "View Leaders", icon: "bi-person-lines-fill", link: "../users" },
+          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+        ],
+      },
+      {
+        category: "Communication",
+        items: [
+          { label: "Add Broadcast", icon: "bi-pencil-square", link: "../addpost" },
+          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
+          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
+        ],
+      },
+      {
+        category: "Activities",
+        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
+      },
+      {
+        category: "Settings",
+        items: [
+          { label: "Settings", icon: "bi-gear", link: "../profile" },
+          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
+        ],
+      },
+    ],
+
+    clan_leader: [
+      {
+        category: "Dashboard",
+        items: [
+          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
+          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
+        ],
+      },
+      {
+        category: "Community",
+        items: [
+          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+        ],
+      },
+      {
+        category: "Communication",
+        items: [
+          { label: "Add Alert", icon: "bi-pencil-square", link: "../addpost" },
+          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
+        ],
+      },
+      {
+        category: "Activities",
+        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
+      },
+      {
+        category: "Settings",
+        items: [
+          { label: "Settings", icon: "bi-gear", link: "../profile" },
+          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
+        ],
+      },
+    ],
+
+    town_leader: [
+      {
+        category: "Dashboard",
+        items: [
+          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
+          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
+        ],
+      },
+      {
+        category: "Management",
+        items: [
+          { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
+          { label: "View Village Leaders", icon: "bi-person-lines-fill", link: "../users" },
+          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
+        ],
+      },
+      {
+        category: "Communication",
+        items: [
+          { label: "Add Broadcast", icon: "bi-pencil-square", link: "../addpost" },
+          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
+          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
+        ],
+      },
+      {
+        category: "Activities",
+        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
+      },
+      {
+        category: "Settings",
+        items: [
+          { label: "Settings", icon: "bi-gear", link: "../profile" },
+          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
+        ],
+      },
+    ],
+
     village_leader: [
       {
         category: "Dashboard",
@@ -118,6 +263,7 @@ function Sidebar() {
       },
     ],
   };
+
 
   return (
     <aside id="sidebar" className="sidebar" style={{ backgroundColor: "black" }}>
