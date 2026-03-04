@@ -28,4 +28,10 @@ app.use(fileUploader({
 // Routes
 app.use("/api/v1", router);
 
+// ✅ 404 Handler for undefined routes
+app.use((req, res) => {
+  console.warn(`404 Not Found: ${req.method} ${req.url}`);
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
 export default app;

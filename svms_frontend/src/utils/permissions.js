@@ -15,7 +15,7 @@ export const hasPermission = (permissionName) => {
     // The frontend user object should have this array if we update the login response.
     // However, if it's missing, we fallback to a safe false.
     if (!user.permissions || !Array.isArray(user.permissions)) {
-      console.warn("User permissions not found in localStorage. Ensure the login API returns permissions.");
+      console.warn("User permissions missing! Please log out and back in to sync your account.");
       return false;
     }
 

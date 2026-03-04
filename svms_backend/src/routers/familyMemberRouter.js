@@ -1,6 +1,6 @@
 import express from "express";
 import * as familyController from "../controllers/familyMemberController.js";
-import protect from "../middlewares/protect.js";
+import { protect } from "../middlewares/protect.js";
 import { checkPermission } from "../middlewares/rbac.js";
 import locationScope from "../middlewares/locationScope.js";
 

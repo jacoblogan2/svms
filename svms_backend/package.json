@@ -53,6 +53,7 @@
     "nodemailer": "^6.9.14",
     "path": "^0.12.7",
     "paypack-js": "^0.2.1",
+    "pdfkit": "^0.17.2",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^5.22.5",

@@ -32,6 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      status: {
+        type: DataTypes.ENUM("draft", "submitted"),
+        defaultValue: "draft"
+      },
+      sentTo: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
       data: {
         type: DataTypes.JSONB,
         defaultValue: {}

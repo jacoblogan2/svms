@@ -30,8 +30,17 @@ const UserDocuments = () => {
     const totalPages = Math.ceil(documents.length / itemsPerPage);
     const paginatedDocuments = documents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   
-    // Create Google Maps search URL
-    const locationQuery = `${village.name}, ${town.name}, ${clan.name}, ${district.name}, ${county.name}, Liberia`;
+    // Create Google Maps search URL safely with optional chaining
+    const locationParts = [
+      village?.name,
+      town?.name,
+      clan?.name,
+      district?.name,
+      county?.name,
+      "Liberia"
+    ].filter(Boolean); // removes undefined/null/empty strings
+    
+    const locationQuery = locationParts.join(", ");
     const googleMapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(locationQuery)}`;
   
     return (
@@ -44,11 +53,11 @@ const UserDocuments = () => {
         <div className="card mt-4 shadow-sm">
           <div className="card-body">
             <h4 className="card-title">Address</h4>
-            <p><strong>County:</strong> {county.name}</p>
-            <p><strong>District:</strong> {district.name}</p>
-            <p><strong>Clan:</strong> {clan.name}</p>
-            <p><strong>Town:</strong> {town.name}</p>
-            <p><strong>Village:</strong> {village.name}</p>
+            <p><strong>County:</strong> {county?.name || "N/A"}</p>
+            <p><strong>District:</strong> {district?.name || "N/A"}</p>
+            <p><strong>Clan:</strong> {clan?.name || "N/A"}</p>
+            <p><strong>Town:</strong> {town?.name || "N/A"}</p>
+            <p><strong>Village:</strong> {village?.name || "N/A"}</p>
           </div>
         </div>
   

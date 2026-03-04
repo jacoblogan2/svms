@@ -56,8 +56,8 @@ table {
 
 body {
   font-family: "Open Sans", sans-serif;
-  background: var(--color-light);
-  color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 a {
@@ -669,6 +669,7 @@ h2 {
 
 @media (min-width: 1200px) {
   #main,
+  .main,
   #footer {
     margin-left: 300px;
   }

@@ -13,12 +13,12 @@ function Home() {
     <>
       <main id="main" className="main">
         <div className="pagetitle">
-          <h1>Users Page</h1>
+          <h1>Admin Analytics Dashboard</h1>
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item"><a href="/">Home</a></li>
               <li className="breadcrumb-item">Pages</li>
-              <li className="breadcrumb-item active">statistics</li>
+              <li className="breadcrumb-item active">Statistics</li>
             </ol>
           </nav>
         </div>
