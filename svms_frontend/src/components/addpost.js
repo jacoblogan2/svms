@@ -1,155 +1,184 @@
-import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Spinner } from "react-bootstrap";
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import * as valUtils from "../utils/validation";
 
-const AddPostForm = () => {
-  const [categories, setCategories] = useState([]);
+const AddPost = () => {
   const [formData, setFormData] = useState({
-    categoryID: "",
     title: "",
-    description: "",
+    content: "",
+    category: "News",
+    image: null,
   });
-  const [loading, setLoading] = useState(false);
+
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [message, setMessage] = useState("");
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/v1/categories/`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "*/*",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.data);
-        }
-      } catch (error) {
-        toast.error("Error fetching categories");
-      }
-      setLoading(false);
-    };
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "title":
+        if (!value.trim()) error = "Title is required.";
+        else if (value.length < 5) error = "Title must be at least 5 characters.";
+        break;
+      case "content":
+        if (!value.trim()) error = "Content is required.";
+        else if (value.length < 10) error = "Content must be at least 10 characters.";
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
 
-    fetchCategories();
-  }, [token]);
-
-  const handleInputChange = (e) => {
+  const handleBlur = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setTouched({ ...touched, [name]: true });
+    setErrors({ ...errors, [name]: validateField(name, value) });
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    if (type === "file") {
+      setFormData({ ...formData, image: files[0] });
+    } else {
+      let sanitizedValue = value;
+      if (name === "title" || name === "content") {
+        sanitizedValue = valUtils.sanitize(value);
+      }
+      setFormData({ ...formData, [name]: sanitizedValue });
+      
+      if (touched[name]) {
+        setErrors({ ...errors, [name]: validateField(name, sanitizedValue) });
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { categoryID, title, description } = formData;
+    setMessage("");
 
-    if (!categoryID || !title || !description) {
-      toast.error("Please fill in all fields.");
+    const newErrors = {};
+    Object.keys(formData).forEach(key => {
+      if (key !== "image" && key !== "category") {
+        const error = validateField(key, formData[key]);
+        if (error) newErrors[key] = error;
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+      setMessage("Please correct the errors.");
       return;
     }
 
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/post/add`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+    const postData = new FormData();
+    postData.append("title", formData.title);
+    postData.append("content", formData.content);
+    postData.append("category", formData.category);
+    if (formData.image) {
+      postData.append("image", formData.image);
+    }
 
-      const result = await response.json();
-      if (result.success) {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/posts/addPost`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: postData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
         toast.success("Post added successfully!");
-        setFormData({ categoryID: "", title: "", description: "" });
+        setMessage("Post added successfully!");
+        setFormData({ title: "", content: "", category: "News", image: null });
+        setErrors({});
+        setTouched({});
       } else {
-        toast.error("Failed to add post. Please try again.");
+        setMessage(data.message || "Failed to add post.");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      setMessage("Error: " + error.message);
     }
-    setLoading(false);
+  };
+
+  const getValidationClass = (name) => {
+    if (!touched[name]) return "";
+    return errors[name] ? "is-invalid" : "is-valid";
   };
 
   return (
-    <div className="container mt-5" >
-      <ToastContainer position="top-right" autoClose={3000} />
-      <div className="col-md-8 mx-auto p-4 border rounded shadow-sm">
-        <h3 className="text-center text-light">Add new broadcast Post</h3>
-
-        {loading && (
-          <div className="text-center my-3">
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
+    <div className="container mt-5">
+      <ToastContainer />
+      <div className="card shadow-lg p-4 bg-dark text-white">
+        <h2 className="text-center mb-4">Add New Post</h2>
+        {message && (
+          <div className={`alert ${message.includes("successfully") ? "alert-success" : "alert-danger"}`}>
+            {message}
           </div>
         )}
-
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="categoryID" className="form-label text-light">
-              Post type
-            </label>
-            <select
-              id="categoryID"
-              name="categoryID"
-              className="form-control"
-              value={formData.categoryID}
-              onChange={handleInputChange}
+            <label className="form-label">Post Title*</label>
+            <input
+              type="text"
+              name="title"
+              className={`form-control bg-dark text-white ${getValidationClass("title")}`}
+              placeholder="Enter post title"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={formData.title}
               required
+            />
+            {touched.title && errors.title && <div className="invalid-feedback">{errors.title}</div>}
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Category</label>
+            <select
+              name="category"
+              className="form-control bg-dark text-white"
+              onChange={handleChange}
+              value={formData.category}
             >
-              <option value="">Select broadcast type</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
+              <option value="News">News</option>
+              <option value="Event">Event</option>
+              <option value="Announcement">Announcement</option>
             </select>
           </div>
 
           <div className="mb-3">
-            <label htmlFor="title" className="form-label text-light">
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              className="form-control"
-              value={formData.title}
-              onChange={handleInputChange}
+            <label className="form-label">Content*</label>
+            <textarea
+              name="content"
+              className={`form-control bg-dark text-white ${getValidationClass("content")}`}
+              rows="5"
+              placeholder="Write your post content here..."
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={formData.content}
               required
-            />
+            ></textarea>
+            {touched.content && errors.content && <div className="invalid-feedback">{errors.content}</div>}
           </div>
 
           <div className="mb-3">
-            <label htmlFor="description" className="form-label text-light">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              className="form-control"
-              rows="4"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
+            <label className="form-label">Upload Image</label>
+            <input
+              type="file"
+              name="image"
+              className="form-control bg-dark text-white"
+              accept="image/*"
+              onChange={handleChange}
             />
           </div>
 
-          <button type="submit" className="btn  w-100" disabled={loading} style={{backgroundColor:'white',color:'black'}}>
-            {loading ? "Submitting..." : "Submit"}
+          <button type="submit" className="btn w-100" style={{ backgroundColor: "white", color: "black", fontWeight: "bold" }}>
+            Add Post
           </button>
         </form>
       </div>
@@ -157,4 +186,4 @@ const AddPostForm = () => {
   );
 };
 
-export default AddPostForm;
+export default AddPost;

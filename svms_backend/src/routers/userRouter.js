@@ -14,6 +14,7 @@ import {
   SignUp,
   getCitizen
 } from '../controllers/userController.js';
+import { verifyEmail } from '../controllers/verificationController.js';
 import { protect } from '../middlewares/protect.js';
 import { checkRole, checkPermission } from '../middlewares/rbac.js';
 import multer from 'multer';
@@ -30,11 +31,13 @@ import {
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+router.post('/signup', SignUp);
+router.get('/verify-email', verifyEmail);
+
 router.get('/', protect, getAllUsers);
 router.get('/citizen', protect, getCitizen);
 router.get('/:id', protect, getOneUser);
 router.post('/addUser', protect, checkPermission('create_user'), addUser);
-router.post('/signup', SignUp);
 router.put('/update/:id', protect, updateOneUser);
 router.delete('/delete/:id', protect, checkRole('admin'), deleteOneUser);
 router.put('/activate/:id', protect, checkPermission('suspend_users'), activateOneUser);

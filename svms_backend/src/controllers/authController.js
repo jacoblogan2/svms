@@ -40,6 +40,13 @@ export const login = async (req, res) => {
       message: "Your account is not active",
     });
   }
+
+  if (user.isVerified === false) {
+    return res.status(401).json({
+      success: false,
+      message: "Please verify your email before logging in",
+    });
+  }
   // Fetch permissions for the role
   const rolePermissions = await RolePermissions.findAll({
     where: { role: user.role },
@@ -57,6 +64,7 @@ export const login = async (req, res) => {
       lastname: user.lastname,
       email: user.email,
       phone: user.phone,
+      nid: user.nid, // Added nid
       role: user.role,
       status: user.status,
       restaurents: user.restaurents,

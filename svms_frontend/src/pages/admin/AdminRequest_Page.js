@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import RequestList from '../../components/admin_requestlist'
@@ -23,7 +22,6 @@ function Home() {
         </div>
        
         <RequestList/>
-        <ToastContainer />
       </main>
     </>
   );

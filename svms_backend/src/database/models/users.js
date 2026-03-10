@@ -49,6 +49,10 @@ module.exports = (sequelize, DataTypes) => {
       clan_id: { type: DataTypes.INTEGER, allowNull: true },
       town_id: { type: DataTypes.INTEGER, allowNull: true },
       village_id: { type: DataTypes.INTEGER, allowNull: true },
+      isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

@@ -243,7 +243,7 @@ const LeaderDashboard = () => {
               <hr className="border-secondary" />
               <div className="d-grid gap-2">
                 {hasPermission('create_user') && (
-                  <a href="/add-leader" className="btn btn-outline-light text-start py-3">
+                  <a href="/addcitizen" className="btn btn-outline-light text-start py-3">
                     <i className="bi bi-person-plus me-2"></i> Register New User
                   </a>
                 )}
@@ -253,12 +253,12 @@ const LeaderDashboard = () => {
                   </a>
                 )}
                 {hasPermission('view_households') && (
-                  <a href="/households" className="btn btn-outline-light text-start py-3">
+                  <a href="/family" className="btn btn-outline-light text-start py-3">
                     <i className="bi bi-house-door me-2"></i> View Household Records
                   </a>
                 )}
                 {hasPermission('send_broadcast') && (
-                  <a href="/broadcast" className="btn btn-outline-light text-start py-3">
+                  <a href="/addpost" className="btn btn-outline-light text-start py-3">
                     <i className="bi bi-megaphone me-2"></i> Send Notification
                   </a>
                 )}

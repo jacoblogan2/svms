@@ -101,8 +101,13 @@ export const getLocationScope = (user) => {
         village_id: user.village_id,
       };
 
-    case "citizen":
-      return { village_id: user.village_id };
+    case "citizen": {
+      const scope = {};
+      if (user.village_id) scope.village_id = user.village_id;
+      else if (user.town_id) scope.town_id = user.town_id;
+      else if (user.county_id) scope.county_id = user.county_id;
+      return scope;
+    }
 
     default:
       return {};

@@ -24,6 +24,9 @@ import {
 import db from "../database/models/index.js";
 import imageUploader from "../helpers/imageUplouder.js";
 import { getLocationScope, outranks } from "../middlewares/roleConfig.js";
+import { generateVerificationToken } from "../utils/generateToken.js";
+import { sendVerificationEmail } from "../services/emailService.js";
+import jwt from "jsonwebtoken";
 
 const getModels = () => {
   const { Requests, Counties, Districts, Clans, Towns, Villages, Categories, Users, Posts, Notifications, Documents } = db;
@@ -187,6 +190,14 @@ export const addUser = async (req, res) => {
       console.error("Failed to create account notification:", notifError);
     }
 
+    try {
+      const token = generateVerificationToken(newUser.id);
+      const link = `http://localhost:3000/verify-email?token=${token}`;
+      await sendVerificationEmail(newUser.email, link);
+    } catch (verifEmailError) {
+      console.error("Failed to send verification email in addUser:", verifEmailError);
+    }
+
     return res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -221,16 +232,10 @@ export const SignUp = async (req, res) => {
     });
   }
   console.log(req.body);
-  const { password, confirmPassword } = req.body;
+  const { password } = req.body;
 
   if (!password || password === "") {
     return res.status(400).json({ success: false, message: "Please provide a password" });
-  }
-  if (!confirmPassword || confirmPassword === "") {
-    return res.status(400).json({ success: false, message: "Please provide a confirmation password" });
-  }
-  if (password !== confirmPassword) {
-    return res.status(400).json({ success: false, message: "Passwords do not match" });
   }
 
   try {
@@ -252,7 +257,23 @@ export const SignUp = async (req, res) => {
     req.body.status = "active";
     req.body.role = "citizen";
 
+    // Parse the submitted address IDs properly.
+    // Empty strings from the form must become null, not "" which breaks the DB.
+    req.body.county_id   = parseId(req.body.county_id);
+    req.body.district_id = parseId(req.body.district_id);
+    req.body.clan_id     = parseId(req.body.clan_id);
+    req.body.town_id     = parseId(req.body.town_id);
+    req.body.village_id  = parseId(req.body.village_id);
+
     const newUser = await createUser(req.body);
+
+    try {
+      const token = generateVerificationToken(newUser.id);
+      const link = `http://localhost:3000/verify-email?token=${token}`;
+      await sendVerificationEmail(newUser.email, link);
+    } catch (verifEmailError) {
+      console.error("Failed to send verification email in SignUp:", verifEmailError);
+    }
 
     return res.status(201).json({
       success: true,
@@ -272,7 +293,7 @@ export const SignUp = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Something went wrong", error });
+    return res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 };
 
@@ -519,29 +540,81 @@ export const addRequest = async (req, res) => {
   try {
     const { Requests } = getModels();
     let userID = req.user.id;
-    const { reason, county_id, district_id, clan_id, town_id, village_id } = req.body;
+    
+    // Extract new fields from request body
+    const { 
+      reason, 
+      county_id, district_id, clan_id, town_id, village_id,
+      full_name, national_id, phone_number, household_size,
+      current_county_id, current_district_id, current_clan_id, current_town_id, current_village_id,
+      transfer_type, move_date, transfer_duration,
+      host_name, host_phone, host_relationship
+    } = req.body;
+
+    let supporting_document = null;
+    
+    // Handle file upload if provided via multer/file-upload
+    if (req.files && req.files.document) {
+      try {
+        // Use existing imageUploader or similar logic if available
+        // For simplicity, we'll assume imageUploader can handle general files
+        const uploadedFile = await imageUploader(req, 'document'); 
+        if (uploadedFile && uploadedFile.url) {
+          supporting_document = uploadedFile.url;
+        }
+      } catch (error) {
+        console.error("Error uploading supporting document:", error);
+      }
+    }
 
     const request = await Requests.create({
       userID,
       reason,
       status: "pending",
+      // Destination Info
       county_id,
       district_id,
       clan_id,
       town_id,
       village_id,
+      // Citizen Identity
+      full_name,
+      national_id,
+      phone_number,
+      household_size,
+      // Current Residence
+      current_county_id,
+      current_district_id,
+      current_clan_id,
+      current_town_id,
+      current_village_id,
+      // Transfer Details
+      transfer_type,
+      move_date,
+      transfer_duration,
+      supporting_document,
+      // Host Details
+      host_name,
+      host_phone,
+      host_relationship
     });
 
-    await createNotification({
-      userID: 1,
-      title: "New Transfer Request",
-      message: `A new transfer request has been submitted by ${req.user.firstname} ${req.user.lastname}`,
-      type: 'request',
-      isRead: false
-    });
+    try {
+      await createNotification({
+        userID: 1, // Notify Admin
+        title: "New Enhanced Transfer Request",
+        message: `A new transfer request has been submitted by ${req.user.firstname} ${req.user.lastname} for ${full_name || 'themselves'}.`,
+        type: 'request',
+        isRead: false
+      });
+    } catch (notificationError) {
+      console.error("Non-fatal error creating notification:", notificationError);
+      // We don't throw here to ensure the user still gets a success response
+    }
 
     res.status(201).json({ message: "Request submitted successfully", request });
   } catch (error) {
+    console.error("Error in addRequest:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -599,6 +672,11 @@ export const getRequests = async (req, res) => {
       { model: Clans, as: "clan" },
       { model: Towns, as: "town" },
       { model: Villages, as: "village" },
+      { model: Counties, as: "current_county" },
+      { model: Districts, as: "current_district" },
+      { model: Clans, as: "current_clan" },
+      { model: Towns, as: "current_town" },
+      { model: Villages, as: "current_village" },
       {
         model: Users,
         as: "user",

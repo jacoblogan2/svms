@@ -9,11 +9,11 @@ export const addFamilyMember = async (req, res) => {
     const memberData = {
       ...req.body,
       household_head_id: headId,
-      county_id,
-      district_id,
-      clan_id,
-      town_id,
-      village_id
+      county_id: county_id || null,
+      district_id: district_id || null,
+      clan_id: clan_id || null,
+      town_id: town_id || null,
+      village_id: village_id || null
     };
 
     const member = await familyService.createFamilyMember(memberData);

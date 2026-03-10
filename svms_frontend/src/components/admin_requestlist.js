@@ -149,33 +149,66 @@ const Requests = () => {
         </Modal.Header>
         <Modal.Body>
           {selectedRequest && (
-            <div>
-              <p><strong>Citizen names:</strong> {selectedRequest.user?.firstname} {selectedRequest.user?.lastname}</p>
-              <p><strong>Email:</strong> {selectedRequest.user?.email}</p>
-              <p><strong>Phone:</strong> {selectedRequest.user?.phone}</p>
-              <p><strong>Reason:</strong> {selectedRequest.reason}</p>
-              <p><strong>Status:</strong> {getStatusBadge(selectedRequest.status)}</p>
-              <div style={{ display: "flex", gap: "20px", justifyContent: "space-between" }}>
-                <div style={{ flex: "0 0 48%", padding: "15px", backgroundColor: "whitesmoke", borderRadius: "8px" }}>
-                  <h5>Destination Location</h5>
-                  <p><strong>County:</strong> {selectedRequest.county?.name}</p>
-                  <p><strong>District:</strong> {selectedRequest.district?.name}</p>
-                  <p><strong>Clan:</strong> {selectedRequest.clan?.name}</p>
-                  <p><strong>Town:</strong> {selectedRequest.town?.name}</p>
-                  <p><strong>Village:</strong> {selectedRequest.village?.name}</p>
-                </div>
+            <div className="text-dark">
+              <div className="section mb-3 p-3 bg-light border rounded">
+                <h6 className="text-secondary fw-bold text-uppercase small mb-2">Section 1: Citizen Identity</h6>
+                <p className="mb-1"><strong>Name:</strong> {selectedRequest.full_name || `${selectedRequest.user?.firstname} ${selectedRequest.user?.lastname}`}</p>
+                <p className="mb-1"><strong>National ID:</strong> {selectedRequest.national_id || selectedRequest.user?.nid || "N/A"}</p>
+                <p className="mb-1"><strong>Phone:</strong> {selectedRequest.phone_number || selectedRequest.user?.phone || "N/A"}</p>
+                <p className="mb-0"><strong>Household Size:</strong> {selectedRequest.household_size || "1"}</p>
+              </div>
 
-                <div style={{ flex: "0 0 48%", padding: "15px", backgroundColor: "whitesmoke", borderRadius: "8px" }}>
-                  <h5>Current Location</h5>
-                  <p><strong>County:</strong> {selectedRequest.user?.county?.name}</p>
-                  <p><strong>District:</strong> {selectedRequest.user?.district?.name}</p>
-                  <p><strong>Clan:</strong> {selectedRequest.user?.clan?.name}</p>
-                  <p><strong>Town:</strong> {selectedRequest.user?.town?.name}</p>
-                  <p><strong>Village:</strong> {selectedRequest.user?.village?.name}</p>
+              <div className="row g-3 mb-3">
+                <div className="col-md-6">
+                  <div className="p-3 bg-light border rounded h-100">
+                    <h6 className="text-secondary fw-bold text-uppercase small mb-2">Current Location</h6>
+                    <p className="mb-1 small"><strong>County:</strong> {selectedRequest.user?.county?.name || "N/A"}</p>
+                    <p className="mb-1 small"><strong>Town:</strong> {selectedRequest.user?.town?.name || "N/A"}</p>
+                    <p className="mb-0 small"><strong>Village:</strong> {selectedRequest.user?.village?.name || "N/A"}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="p-3 bg-warning-subtle border border-warning-low-light rounded h-100">
+                    <h6 className="text-warning-emphasis fw-bold text-uppercase small mb-2">Destination</h6>
+                    <p className="mb-1 small"><strong>County:</strong> {selectedRequest.county?.name || "N/A"}</p>
+                    <p className="mb-1 small"><strong>Town:</strong> {selectedRequest.town?.name || "N/A"}</p>
+                    <p className="mb-0 small"><strong>Village:</strong> {selectedRequest.village?.name || "N/A"}</p>
+                  </div>
                 </div>
               </div>
-              <p><strong>Created At:</strong> {new Date(selectedRequest.createdAt).toLocaleString()}</p>
-              <p><strong>Updated At:</strong> {new Date(selectedRequest.updatedAt).toLocaleString()}</p>
+
+              <div className="section mb-3 p-3 bg-success-subtle border rounded">
+                <h6 className="text-success-emphasis fw-bold text-uppercase small mb-2">Transfer Details</h6>
+                <div className="row">
+                  <div className="col-md-6"><p className="mb-1 small"><strong>Type:</strong> {selectedRequest.transfer_type || "N/A"}</p></div>
+                  <div className="col-md-6"><p className="mb-1 small"><strong>Move Date:</strong> {selectedRequest.move_date ? new Date(selectedRequest.move_date).toLocaleDateString() : "N/A"}</p></div>
+                  <div className="col-md-6"><p className="mb-1 small"><strong>Duration:</strong> {selectedRequest.transfer_duration || "N/A"}</p></div>
+                </div>
+                <hr className="my-2" />
+                <p className="mb-1"><strong>Reason:</strong></p>
+                <p className="bg-white p-2 border rounded small mb-2">{selectedRequest.reason}</p>
+                {selectedRequest.supporting_document && (
+                  <div className="mt-2 text-center">
+                    <a href={selectedRequest.supporting_document} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-success">
+                      <i className="bi bi-file-earmark-arrow-down me-1"></i> Download Supporting Document
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {selectedRequest.host_name && (
+                <div className="section mb-3 p-3 bg-light border rounded">
+                  <h6 className="text-secondary fw-bold text-uppercase small mb-2">Host Information</h6>
+                  <p className="mb-1"><strong>Host:</strong> {selectedRequest.host_name}</p>
+                  <p className="mb-1"><strong>Phone:</strong> {selectedRequest.host_phone}</p>
+                  <p className="mb-0"><strong>Relationship:</strong> {selectedRequest.host_relationship}</p>
+                </div>
+              )}
+
+              <div className="d-flex justify-content-between text-muted small mt-3 px-2">
+                <span>Requested: {new Date(selectedRequest.createdAt).toLocaleString()}</span>
+                <span>Status: {getStatusBadge(selectedRequest.status)}</span>
+              </div>
             </div>
           )}
         </Modal.Body>

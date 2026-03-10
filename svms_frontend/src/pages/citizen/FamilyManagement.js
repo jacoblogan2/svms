@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button, Table, Badge, Modal } from "react-bootstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import { hasPermission } from "../../utils/permissions";
+import * as valUtils from "../../utils/validation";
 
 const FamilyManagement = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -21,13 +22,24 @@ const FamilyManagement = () => {
     occupation: ""
   });
 
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const isLeader = user.role !== 'citizen';
   const baseURL = process.env.REACT_APP_BASE_URL;
 
   const fetchMembers = React.useCallback(async () => {
     try {
       setFetchError(false);
-      const response = await fetch(`${baseURL}/api/v1/family-members/my-family`, {
+      const user = JSON.parse(localStorage.getItem("user")) || {};
+      
+      const endpoint = isLeader 
+        ? `${baseURL}/api/v1/family-members/all`
+        : `${baseURL}/api/v1/family-members/my-family`;
+
+      const response = await fetch(endpoint, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -49,8 +61,63 @@ const FamilyManagement = () => {
     fetchMembers();
   }, [fetchMembers]);
 
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "fullname":
+        if (!value.trim()) error = "Name is required.";
+        break;
+      case "dob":
+        if (!value) error = "Date of birth is required.";
+        break;
+      case "gender":
+        if (!value) error = "Gender is required.";
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched({ ...touched, [name]: true });
+    setErrors({ ...errors, [name]: validateField(name, value) });
+  };
+
+  const hangleChange = (e) => {
+    const { name, value } = e.target;
+    let sanitizedValue = value;
+
+    if (name === "fullname") {
+      sanitizedValue = valUtils.sanitizeName(value);
+    } else if (name === "occupation") {
+      sanitizedValue = valUtils.sanitize(value);
+    }
+
+    setCurrentMember({ ...currentMember, [name]: sanitizedValue });
+
+    if (touched[name]) {
+      setErrors({ ...errors, [name]: validateField(name, sanitizedValue) });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const newErrors = {};
+    Object.keys(currentMember).forEach(key => {
+      const error = validateField(key, currentMember[key]);
+      if (error) newErrors[key] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setTouched(Object.keys(currentMember).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+      toast.error("Please fill in all required fields correctly.");
+      return;
+    }
+
     const url = isEditing
       ? `${baseURL}/api/v1/family-members/update/${currentMember.id}`
       : `${baseURL}/api/v1/family-members/add`;
@@ -82,7 +149,16 @@ const FamilyManagement = () => {
   const handleEdit = (member) => {
     setCurrentMember(member);
     setIsEditing(true);
+    setErrors({});
+    setTouched({});
     setShowModal(true);
+  };
+
+  const getValidationClass = (name) => {
+    if (!touched[name]) return "bg-black text-white border-secondary";
+    return errors[name] 
+      ? "bg-black text-white border-secondary is-invalid" 
+      : "bg-black text-white border-secondary is-valid";
   };
 
   // ✅ FIX 2: Guard hasPermission call — only invoke after loading is done
@@ -115,6 +191,8 @@ const FamilyManagement = () => {
             onClick={() => {
               setIsEditing(false);
               setCurrentMember({ fullname: "", relationship: "Child", gender: "Male", status: "Alive", occupation: "" });
+              setErrors({});
+              setTouched({});
               setShowModal(true);
             }}
           >
@@ -131,6 +209,7 @@ const FamilyManagement = () => {
             <Table responsive variant="dark" hover className="mb-0">
               <thead>
                 <tr>
+                  {isLeader && <th>Household Head</th>}
                   <th>Full Name</th>
                   <th>Relationship</th>
                   <th>Gender</th>
@@ -143,6 +222,9 @@ const FamilyManagement = () => {
               <tbody>
                 {members.map(member => (
                   <tr key={member.id}>
+                    {isLeader && (
+                      <td>{member.head ? `${member.head.firstname} ${member.head.lastname}` : 'Unknown'}</td>
+                    )}
                     <td>{member.fullname}</td>
                     <td>{member.relationship}</td>
                     <td>{member.gender}</td>
@@ -182,28 +264,34 @@ const FamilyManagement = () => {
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
             <Form.Group className="mb-3">
-              <Form.Label>Full Name</Form.Label>
+              <Form.Label>Full Name*</Form.Label>
               <Form.Control
                 type="text"
+                name="fullname"
                 required
-                className="bg-black text-white border-secondary"
+                className={getValidationClass("fullname")}
                 value={currentMember.fullname}
-                onChange={e => setCurrentMember({ ...currentMember, fullname: e.target.value })}
+                onChange={hangleChange}
+                onBlur={handleBlur}
               />
+              {touched.fullname && errors.fullname && <div className="invalid-feedback">{errors.fullname}</div>}
             </Form.Group>
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Gender <span className="text-danger">*</span></Form.Label>
                   <Form.Select
-                    className="bg-black text-white border-secondary"
+                    name="gender"
+                    className={getValidationClass("gender")}
                     value={currentMember.gender}
-                    onChange={e => setCurrentMember({ ...currentMember, gender: e.target.value })}
+                    onChange={hangleChange}
+                    onBlur={handleBlur}
                     required
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </Form.Select>
+                  {touched.gender && errors.gender && <div className="invalid-feedback">{errors.gender}</div>}
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -211,11 +299,14 @@ const FamilyManagement = () => {
                   <Form.Label>Date of Birth <span className="text-danger">*</span></Form.Label>
                   <Form.Control
                     type="date"
-                    className="bg-black text-white border-secondary"
+                    name="dob"
+                    className={getValidationClass("dob")}
                     value={currentMember.dob ? currentMember.dob.substring(0, 10) : ""}
-                    onChange={e => setCurrentMember({ ...currentMember, dob: e.target.value })}
+                    onChange={hangleChange}
+                    onBlur={handleBlur}
                     required
                   />
+                  {touched.dob && errors.dob && <div className="invalid-feedback">{errors.dob}</div>}
                 </Form.Group>
               </Col>
             </Row>
@@ -225,9 +316,10 @@ const FamilyManagement = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Relationship</Form.Label>
                   <Form.Select
+                    name="relationship"
                     className="bg-black text-white border-secondary"
                     value={currentMember.relationship}
-                    onChange={e => setCurrentMember({ ...currentMember, relationship: e.target.value })}
+                    onChange={hangleChange}
                   >
                     <option value="Spouse">Spouse</option>
                     <option value="Child">Child</option>
@@ -241,9 +333,10 @@ const FamilyManagement = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Status</Form.Label>
                   <Form.Select
+                    name="status"
                     className="bg-black text-white border-secondary"
                     value={currentMember.status}
-                    onChange={e => setCurrentMember({ ...currentMember, status: e.target.value })}
+                    onChange={hangleChange}
                   >
                     <option value="Alive">Alive</option>
                     <option value="Deceased">Deceased</option>
@@ -255,9 +348,10 @@ const FamilyManagement = () => {
               <Form.Label>Occupation</Form.Label>
               <Form.Control
                 type="text"
+                name="occupation"
                 className="bg-black text-white border-secondary"
                 value={currentMember.occupation || ""}
-                onChange={e => setCurrentMember({ ...currentMember, occupation: e.target.value })}
+                onChange={hangleChange}
               />
             </Form.Group>
           </Modal.Body>

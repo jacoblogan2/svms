@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import * as valUtils from "../utils/validation";
 
 // Defines which address fields are required per role
 const ROLE_REQUIRED_FIELDS = {
@@ -27,6 +29,8 @@ const AddUser = () => {
     village_id: "",
   });
 
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [message, setMessage] = useState("");
   const [counties, setCounties] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -38,10 +42,40 @@ const AddUser = () => {
   const inputStyle = { backgroundColor: 'white', color: 'black' };
 
   const requiredFields = ROLE_REQUIRED_FIELDS[formData.role] || [];
-  const needsDistrict = requiredFields.includes("district_id");
-  const needsClan     = requiredFields.includes("clan_id");
-  const needsTown     = requiredFields.includes("town_id");
-  const needsVillage  = requiredFields.includes("village_id");
+
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "email":
+        if (!valUtils.validateEmail(value)) error = "Invalid email format.";
+        break;
+      case "phone":
+        if (!valUtils.validatePhone(value)) error = "Phone must be exactly 10 digits.";
+        break;
+      case "nid":
+        if (!valUtils.validateNID(value)) error = "National ID must be exactly 10 digits.";
+        break;
+      case "firstname":
+      case "lastname":
+        if (!value.trim()) error = "This field is required.";
+        break;
+      case "role":
+        if (!value) error = "Role is required.";
+        break;
+      default:
+        if (requiredFields.includes(name) && !value) {
+          error = `Please select a ${name.replace("_id", "").replace("_", " ")}.`;
+        }
+        break;
+    }
+    return error;
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched({ ...touched, [name]: true });
+    setErrors({ ...errors, [name]: validateField(name, value) });
+  };
 
   // Fetch initial address data
   useEffect(() => {
@@ -80,12 +114,17 @@ const AddUser = () => {
       town_id: "",
       village_id: "",
     }));
+    setTouched({ ...touched, role: true });
+    setErrors({ ...errors, role: validateField("role", newRole) });
     setDistricts([]); setClans([]); setTowns([]); setVillages([]);
   };
 
   const handleCountyChange = (e) => {
     const countyId = e.target.value;
     setFormData(prev => ({ ...prev, county_id: countyId, district_id: "", clan_id: "", town_id: "", village_id: "" }));
+    setTouched({ ...touched, county_id: true });
+    setErrors({ ...errors, county_id: validateField("county_id", countyId) });
+
     const selectedCounty = counties.find(c => c.id === parseInt(countyId));
     setDistricts(selectedCounty ? selectedCounty.districts : []);
     setClans([]); setTowns([]); setVillages([]);
@@ -94,6 +133,9 @@ const AddUser = () => {
   const handleDistrictChange = (e) => {
     const districtId = e.target.value;
     setFormData(prev => ({ ...prev, district_id: districtId, clan_id: "", town_id: "", village_id: "" }));
+    setTouched({ ...touched, district_id: true });
+    setErrors({ ...errors, district_id: validateField("district_id", districtId) });
+
     const selectedDistrict = districts.find(d => d.id === parseInt(districtId));
     setClans(selectedDistrict ? selectedDistrict.clans : []);
     setTowns([]); setVillages([]);
@@ -102,6 +144,9 @@ const AddUser = () => {
   const handleClanChange = (e) => {
     const clanId = e.target.value;
     setFormData(prev => ({ ...prev, clan_id: clanId, town_id: "", village_id: "" }));
+    setTouched({ ...touched, clan_id: true });
+    setErrors({ ...errors, clan_id: validateField("clan_id", clanId) });
+
     const selectedClan = clans.find(c => c.id === parseInt(clanId));
     setTowns(selectedClan ? selectedClan.towns : []);
     setVillages([]);
@@ -110,15 +155,32 @@ const AddUser = () => {
   const handleTownChange = (e) => {
     const townId = e.target.value;
     setFormData(prev => ({ ...prev, town_id: townId, village_id: "" }));
+    setTouched({ ...touched, town_id: true });
+    setErrors({ ...errors, town_id: validateField("town_id", townId) });
+
     const selectedTown = towns.find(t => t.id === parseInt(townId));
     setVillages(selectedTown && selectedTown.villages ? selectedTown.villages : []);
   };
 
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    let sanitizedValue = value;
+
+    if (name === "nid" || name === "phone") {
+      sanitizedValue = valUtils.sanitizeDigits(value);
+    } else if (name === "firstname" || name === "lastname") {
+      sanitizedValue = valUtils.sanitizeName(value);
+    } else if (name === "email") {
+      sanitizedValue = valUtils.sanitize(value);
+    }
+
+    setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
+    
+    if (touched[name]) {
+      setErrors({ ...errors, [name]: validateField(name, sanitizedValue) });
+    }
   };
 
-  // Build payload: only include address fields relevant to the selected role
   const buildPayload = () => {
     const payload = {
       firstname: formData.firstname,
@@ -131,7 +193,6 @@ const AddUser = () => {
     };
 
     requiredFields.forEach(field => {
-      // Only send the field if it has a value
       if (formData[field]) payload[field] = formData[field];
     });
 
@@ -142,13 +203,17 @@ const AddUser = () => {
     e.preventDefault();
     setMessage("");
 
-    // Basic client-side validation: ensure required address fields are selected
-    for (const field of requiredFields) {
-      if (!formData[field]) {
-        const label = field.replace("_id", "").replace("_", " ");
-        setMessage(`Please select a ${label}.`);
-        return;
-      }
+    const newErrors = {};
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key]);
+      if (error) newErrors[key] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+      setMessage("Please correct the errors in the form.");
+      return;
     }
 
     try {
@@ -163,13 +228,15 @@ const AddUser = () => {
       });
       const data = await response.json();
       if (response.ok) {
+        toast.success("User added successfully!");
         setMessage("User added successfully!");
-        // Reset form
         setFormData({
           firstname: "", lastname: "", email: "", phone: "", nid: "",
           role: "village_leader", gender: "Male",
           county_id: "", district_id: "", clan_id: "", town_id: "", village_id: "",
         });
+        setErrors({});
+        setTouched({});
         setDistricts([]); setClans([]); setTowns([]); setVillages([]);
       } else {
         setMessage(data.message || "Failed to add user.");
@@ -177,6 +244,11 @@ const AddUser = () => {
     } catch (error) {
       setMessage("Error: " + error.message);
     }
+  };
+
+  const getValidationClass = (name) => {
+    if (!touched[name]) return "";
+    return errors[name] ? "is-invalid" : "is-valid";
   };
 
   return (
@@ -196,36 +268,44 @@ const AddUser = () => {
           <input
             type="text"
             name="nid"
-            className="form-control"
+            className={`form-control ${getValidationClass("nid")}`}
             style={inputStyle}
             placeholder="Citizen ID Number"
             onChange={handleChange}
+            onBlur={handleBlur}
             value={formData.nid}
             required
             maxLength="10"
-            minLength="10"
-            pattern="\d{10}"
           />
+          {touched.nid && errors.nid && <div className="invalid-feedback">{errors.nid}</div>}
         </div>
 
         {/* Basic Info */}
         <div className="col-md-6">
-          <input type="text" name="firstname" className="form-control" style={inputStyle} placeholder="First Name" onChange={handleChange} value={formData.firstname} required />
+          <label className="text-white mb-1">First Name*</label>
+          <input type="text" name="firstname" className={`form-control ${getValidationClass("firstname")}`} style={inputStyle} placeholder="First Name" onChange={handleChange} onBlur={handleBlur} value={formData.firstname} required />
+          {touched.firstname && errors.firstname && <div className="invalid-feedback d-block">{errors.firstname}</div>}
         </div>
         <div className="col-md-6">
-          <input type="text" name="lastname" className="form-control" style={inputStyle} placeholder="Last Name" onChange={handleChange} value={formData.lastname} required />
+          <label className="text-white mb-1">Last Name*</label>
+          <input type="text" name="lastname" className={`form-control ${getValidationClass("lastname")}`} style={inputStyle} placeholder="Last Name" onChange={handleChange} onBlur={handleBlur} value={formData.lastname} required />
+          {touched.lastname && errors.lastname && <div className="invalid-feedback d-block">{errors.lastname}</div>}
         </div>
         <div className="col-md-6">
-          <input type="email" name="email" className="form-control" style={inputStyle} placeholder="Email" onChange={handleChange} value={formData.email} required />
+          <label className="text-white mb-1">Email*</label>
+          <input type="email" name="email" className={`form-control ${getValidationClass("email")}`} style={inputStyle} placeholder="Email" onChange={handleChange} onBlur={handleBlur} value={formData.email} required />
+          {touched.email && errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
         </div>
         <div className="col-md-6">
-          <input type="text" name="phone" className="form-control" style={inputStyle} placeholder="Phone" onChange={handleChange} value={formData.phone} required />
+          <label className="text-white mb-1">Phone*</label>
+          <input type="text" name="phone" className={`form-control ${getValidationClass("phone")}`} style={inputStyle} placeholder="Phone" onChange={handleChange} onBlur={handleBlur} value={formData.phone} required maxLength="10" />
+          {touched.phone && errors.phone && <div className="invalid-feedback d-block">{errors.phone}</div>}
         </div>
 
         {/* Role & Gender */}
         <div className="col-md-6">
           <label className="text-white mb-1">Select Role:</label>
-          <select name="role" className="form-select" style={inputStyle} onChange={handleRoleChange} value={formData.role} required>
+          <select name="role" className={`form-select ${getValidationClass("role")}`} style={inputStyle} onChange={handleRoleChange} onBlur={handleBlur} value={formData.role} required>
             <option value="citizen">Citizen</option>
             <option value="village_leader">Village Leader</option>
             <option value="town_leader">Town Leader</option>
@@ -234,6 +314,7 @@ const AddUser = () => {
             <option value="county_leader">County Leader</option>
             <option value="admin">Admin</option>
           </select>
+          {touched.role && errors.role && <div className="invalid-feedback d-block">{errors.role}</div>}
         </div>
         <div className="col-md-6">
           <label className="text-white mb-1">Select Gender:</label>
@@ -247,64 +328,69 @@ const AddUser = () => {
         {formData.role !== "admin" && (
           <div className="col-md-6">
             <label className="text-white mb-1">Select County:</label>
-            <select name="county_id" className="form-select" style={inputStyle} onChange={handleCountyChange} value={formData.county_id} required>
+            <select name="county_id" className={`form-select ${getValidationClass("county_id")}`} style={inputStyle} onChange={handleCountyChange} onBlur={handleBlur} value={formData.county_id} required>
               <option value="">Select County</option>
               {counties.map(county => (
                 <option key={county.id} value={county.id}>{county.name}</option>
               ))}
             </select>
+            {touched.county_id && errors.county_id && <div className="invalid-feedback d-block">{errors.county_id}</div>}
           </div>
         )}
 
         {/* District */}
-        {needsDistrict && (
+        {requiredFields.includes("district_id") && (
           <div className="col-md-6">
             <label className="text-white mb-1">Select District:</label>
-            <select name="district_id" className="form-select" style={inputStyle} onChange={handleDistrictChange} value={formData.district_id} disabled={!formData.county_id} required>
+            <select name="district_id" className={`form-select ${getValidationClass("district_id")}`} style={inputStyle} onChange={handleDistrictChange} onBlur={handleBlur} value={formData.district_id} disabled={!formData.county_id} required>
               <option value="">Select District</option>
               {districts.map(district => (
                 <option key={district.id} value={district.id}>{district.name}</option>
               ))}
             </select>
+            {touched.district_id && errors.district_id && <div className="invalid-feedback d-block">{errors.district_id}</div>}
           </div>
         )}
 
         {/* Clan */}
-        {needsClan && (
+        {requiredFields.includes("clan_id") && (
           <div className="col-md-6">
             <label className="text-white mb-1">Select Clan:</label>
-            <select name="clan_id" className="form-select" style={inputStyle} onChange={handleClanChange} value={formData.clan_id} disabled={!formData.district_id} required>
+            <select name="clan_id" className={`form-select ${getValidationClass("clan_id")}`} style={inputStyle} onChange={handleClanChange} onBlur={handleBlur} value={formData.clan_id} disabled={!formData.district_id} required>
               <option value="">Select Clan</option>
               {clans.map(clan => (
                 <option key={clan.id} value={clan.id}>{clan.name}</option>
               ))}
             </select>
+            {touched.clan_id && errors.clan_id && <div className="invalid-feedback d-block">{errors.clan_id}</div>}
           </div>
         )}
 
         {/* Town */}
-        {needsTown && (
+        {requiredFields.includes("town_id") && (
           <div className="col-md-6">
             <label className="text-white mb-1">Select Town:</label>
-            <select name="town_id" className="form-select" style={inputStyle} onChange={handleTownChange} value={formData.town_id} disabled={!formData.clan_id} required>
+            <select name="town_id" className={`form-select ${getValidationClass("town_id")}`} style={inputStyle} onChange={handleTownChange} onBlur={handleBlur} value={formData.town_id} disabled={!formData.clan_id} required>
               <option value="">Select Town</option>
               {towns.map(town => (
                 <option key={town.id} value={town.id}>{town.name}</option>
               ))}
             </select>
+            {touched.town_id && errors.town_id && <div className="invalid-feedback d-block">{errors.town_id}</div>}
           </div>
         )}
 
         {/* Village */}
-        {needsVillage && (
+        {requiredFields.includes("village_id") && (
           <div className="col-12">
             <label className="text-white mb-1">Select Village:</label>
-            <select name="village_id" className="form-select" style={inputStyle} onChange={handleChange} value={formData.village_id} disabled={!formData.town_id || villages.length === 0} required={villages.length > 0}>
+            <select name="village_id" className={`form-select ${getValidationClass("village_id")}`} style={inputStyle} onChange={handleChange} onBlur={handleBlur} value={formData.village_id} disabled={!formData.town_id || villages.length === 0} required={villages.length > 0}>
               <option value="">{villages.length > 0 ? "Select Village" : "No Villages Available"}</option>
               {villages.map(village => (
                 <option key={village.id} value={village.id}>{village.name}</option>
               ))}
             </select>
+            {touched.village_id && errors.village_id && <div className="invalid-feedback d-block">{errors.village_id}</div>}
           </div>
         )}
 

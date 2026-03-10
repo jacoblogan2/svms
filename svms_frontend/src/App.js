@@ -9,6 +9,7 @@ import SignUP from './components/Signup';
 import Reset from './components/reset';
 import Code from './components/code';
 import ResetPassword from './components/ResetPassword';
+import VerifyEmail from './components/VerifyEmail';
 import OneUser from './pages/admin/oneUser'; 
 import Profile from './pages/admin/profile'; 
 import ProfileCitizen from './pages/admin/citizenprofile'; 
@@ -33,6 +34,8 @@ import FamilyManagement from './pages/citizen/FamilyManagement';
 import ReportingModule from './pages/leaders/ReportingModule';
 
 import './components/style.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Role labels for display
 const ROLE_LABELS = {
@@ -75,7 +78,7 @@ const DashboardWrapper = () => {
 
 const MainLayout = () => {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login' || location.pathname === '/reset' || location.pathname.startsWith('/code/') || location.pathname.startsWith('/resetPassword/');
+  const isLoginPage = location.pathname === '/login' || location.pathname === '/reset' || location.pathname.startsWith('/code/') || location.pathname.startsWith('/resetPassword/') || location.pathname.startsWith('/verify-email');
 
   return (
     <div className="App">
@@ -134,7 +137,7 @@ const MainLayout = () => {
           <Route 
             path="/statistics" 
             element={
-              <ProtectedRoute allowedRoles={ALL_LEADERS}>
+              <ProtectedRoute allowedRoles={[...ALL_LEADERS, 'citizen']}>
                 <DashboardWrapper />
               </ProtectedRoute>
             } 
@@ -172,6 +175,7 @@ const MainLayout = () => {
 function App() {
   return (
     <Router>
+      <ToastContainer theme="dark" position="top-right" autoClose={3000} />
       <Routes>
         {/* Login Routes */}
         <Route path="/login" element={<Login />} />
@@ -179,6 +183,7 @@ function App() {
         <Route path="/signup" element={<SignUP />} />
         <Route path="/code/:email" element={<Code />} />
         <Route path="/resetPassword/:email" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/" element={<Login />} />
 
         {/* Main Layout Routes */}
