@@ -220,238 +220,268 @@ const AddUser = () => {
   };
 
   const getValidationClass = (name) => {
-    if (!touched[name]) return "bg-dark text-white";
-    return errors[name] ? "bg-dark text-white is-invalid" : "bg-dark text-white is-valid";
+    if (!touched[name]) return "";
+    return errors[name] ? "is-invalid" : "is-valid";
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100" style={{ backgroundColor: "black" }}>
-      <div className="bg-dark p-5 rounded shadow-lg w-50 text-white">
-        <h2 className="text-center h3">Liberia Smart Village Management System</h2>
-        <h3 className="text-center h5 mt-2">Sign up</h3>
-        {message && <div className="alert alert-info">{message}</div>}
-        <form onSubmit={handleSubmit} className="mt-4">
-          <div className="mb-3">
-            <label htmlFor="nid" className="form-label">National ID*</label>
-            <input
-              type="text"
-              name="nid"
-              className={`form-control ${getValidationClass("nid")}`}
-              placeholder="National ID"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.nid}
-              required
-              maxLength="10"
-            />
-            {touched.nid && errors.nid && <div className="invalid-feedback">{errors.nid}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="firstname" className="form-label">First Name*</label>
-            <input
-              type="text"
-              name="firstname"
-              className={`form-control ${getValidationClass("firstname")}`}
-              placeholder="First Name"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.firstname}
-              required
-            />
-            {touched.firstname && errors.firstname && <div className="invalid-feedback">{errors.firstname}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="lastname" className="form-label">Last Name*</label>
-            <input
-              type="text"
-              name="lastname"
-              className={`form-control ${getValidationClass("lastname")}`}
-              placeholder="Last Name"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.lastname}
-              required
-            />
-            {touched.lastname && errors.lastname && <div className="invalid-feedback">{errors.lastname}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email*</label>
-            <input
-              type="email"
-              name="email"
-              className={`form-control ${getValidationClass("email")}`}
-              placeholder="Email address"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.email}
-              required
-            />
-            {touched.email && errors.email && <div className="invalid-feedback">{errors.email}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="phone" className="form-label">Phone*</label>
-            <input
-              type="text"
-              name="phone"
-              className={`form-control ${getValidationClass("phone")}`}
-              placeholder="Phone number"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.phone}
-              required
-              maxLength="10"
-            />
-            {touched.phone && errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="gender" className="form-label">Gender*</label>
-            <select
-              name="gender"
-              className="form-select bg-dark text-white"
-              onChange={handleChange}
-              value={formData.gender}
-              required
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="county_id" className="form-label">County*</label>
-            <select
-              name="county_id"
-              className={`form-select ${getValidationClass("county_id")}`}
-              onChange={handleCountyChange}
-              onBlur={handleBlur}
-              value={formData.county_id}
-              required
-            >
-              <option value="">Select County</option>
-              {counties.map((county) => (
-                <option key={county.id} value={county.id}>
-                  {county.name}
-                </option>
-              ))}
-            </select>
-            {touched.county_id && errors.county_id && <div className="invalid-feedback">{errors.county_id}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="district_id" className="form-label">District*</label>
-            <select
-              name="district_id"
-              className={`form-select ${getValidationClass("district_id")}`}
-              onChange={handleDistrictChange}
-              onBlur={handleBlur}
-              value={formData.district_id}
-              required
-              disabled={!formData.county_id}
-            >
-              <option value="">Select District</option>
-              {districts.map((district) => (
-                <option key={district.id} value={district.id}>
-                  {district.name}
-                </option>
-              ))}
-            </select>
-            {touched.district_id && errors.district_id && <div className="invalid-feedback">{errors.district_id}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="clan_id" className="form-label">Clan*</label>
-            <select
-              name="clan_id"
-              className={`form-select ${getValidationClass("clan_id")}`}
-              onChange={handleClanChange}
-              onBlur={handleBlur}
-              value={formData.clan_id}
-              required
-              disabled={!formData.district_id}
-            >
-              <option value="">Select Clan</option>
-              {clans.map((clan) => (
-                <option key={clan.id} value={clan.id}>
-                  {clan.name}
-                </option>
-              ))}
-            </select>
-            {touched.clan_id && errors.clan_id && <div className="invalid-feedback">{errors.clan_id}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="town_id" className="form-label">Town*</label>
-            <select
-              name="town_id"
-              className={`form-select ${getValidationClass("town_id")}`}
-              onChange={handleTownChange}
-              onBlur={handleBlur}
-              value={formData.town_id}
-              required
-              disabled={!formData.clan_id}
-            >
-              <option value="">Select Town</option>
-              {towns.map((town) => (
-                <option key={town.id} value={town.id}>
-                  {town.name}
-                </option>
-              ))}
-            </select>
-            {touched.town_id && errors.town_id && <div className="invalid-feedback">{errors.town_id}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="village_id" className="form-label">Village*</label>
-            <select
-              name="village_id"
-              className={`form-select ${getValidationClass("village_id")}`}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.village_id}
-              required
-              disabled={!formData.town_id}
-            >
-              <option value="">Select Village</option>
-              {villages.map((village) => (
-                <option key={village.id} value={village.id}>
-                  {village.name}
-                </option>
-              ))}
-            </select>
-            {touched.village_id && errors.village_id && <div className="invalid-feedback">{errors.village_id}</div>}
-          </div>
-         
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password*</label>
-            <input
-              type="password"
-              name="password"
-              className={`form-control ${getValidationClass("password")}`}
-              placeholder="Password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.password}
-              required
-            />
-            {touched.password && errors.password && <div className="invalid-feedback">{errors.password}</div>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="confirmPassword" className="form-label">Confirm Password*</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              className={`form-control ${getValidationClass("confirmPassword")}`}
-              placeholder="Confirm Password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={formData.confirmPassword}
-              required
-            />
-            {touched.confirmPassword && errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary btn-lg w-100 mt-4"
-            disabled={loading}
-          >
-            {loading ? "Signing up..." : "Sign up"}
-          </button>
-        </form>
+    <div className="gov-page">
+      <div className="gov-top-bar">
+        <div className="gov-top-bar-text">SMART VILLAGE Portal - LIBERIA</div>
+      </div>
+
+      <div className="gov-card">
+        <div className="gov-card-head">
+          <div className="gov-card-title">Smart Village Management System</div>
+        </div>
+
+        <div className="gov-card-body">
+          <h3>Create an Account</h3>
+          {message && <div className="gov-invalid-feedback" style={{marginBottom: '1rem'}}>{message}</div>}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="nid">National ID <span className="gov-label-required">*</span></label>
+              <input
+                type="text"
+                name="nid"
+                id="nid"
+                className={`gov-input ${getValidationClass("nid")}`}
+                placeholder="NIN"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.nid}
+                required
+                maxLength="10"
+              />
+              {touched.nid && errors.nid && <div className="gov-invalid-feedback">{errors.nid}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="firstname">First Name <span className="gov-label-required">*</span></label>
+              <input
+                type="text"
+                name="firstname"
+                id="firstname"
+                className={`gov-input ${getValidationClass("firstname")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.firstname}
+                required
+              />
+              {touched.firstname && errors.firstname && <div className="gov-invalid-feedback">{errors.firstname}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="lastname">Last Name <span className="gov-label-required">*</span></label>
+              <input
+                type="text"
+                name="lastname"
+                id="lastname"
+                className={`gov-input ${getValidationClass("lastname")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.lastname}
+                required
+              />
+              {touched.lastname && errors.lastname && <div className="gov-invalid-feedback">{errors.lastname}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="email">Email <span className="gov-label-required">*</span></label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                className={`gov-input ${getValidationClass("email")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.email}
+                required
+              />
+              {touched.email && errors.email && <div className="gov-invalid-feedback">{errors.email}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="phone">Phone <span className="gov-label-required">*</span></label>
+              <input
+                type="text"
+                name="phone"
+                id="phone"
+                className={`gov-input ${getValidationClass("phone")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.phone}
+                required
+                maxLength="10"
+              />
+              {touched.phone && errors.phone && <div className="gov-invalid-feedback">{errors.phone}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="gender">Gender <span className="gov-label-required">*</span></label>
+              <select
+                name="gender"
+                id="gender"
+                className="gov-select"
+                onChange={handleChange}
+                value={formData.gender}
+                required
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="county_id">County <span className="gov-label-required">*</span></label>
+              <select
+                name="county_id"
+                id="county_id"
+                className={`gov-select ${getValidationClass("county_id")}`}
+                onChange={handleCountyChange}
+                onBlur={handleBlur}
+                value={formData.county_id}
+                required
+              >
+                <option value="">Select County</option>
+                {counties.map((county) => (
+                  <option key={county.id} value={county.id}>
+                    {county.name}
+                  </option>
+                ))}
+              </select>
+              {touched.county_id && errors.county_id && <div className="gov-invalid-feedback">{errors.county_id}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="district_id">District <span className="gov-label-required">*</span></label>
+              <select
+                name="district_id"
+                id="district_id"
+                className={`gov-select ${getValidationClass("district_id")}`}
+                onChange={handleDistrictChange}
+                onBlur={handleBlur}
+                value={formData.district_id}
+                required
+                disabled={!formData.county_id}
+              >
+                <option value="">Select District</option>
+                {districts.map((district) => (
+                  <option key={district.id} value={district.id}>
+                    {district.name}
+                  </option>
+                ))}
+              </select>
+              {touched.district_id && errors.district_id && <div className="gov-invalid-feedback">{errors.district_id}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="clan_id">Clan <span className="gov-label-required">*</span></label>
+              <select
+                name="clan_id"
+                id="clan_id"
+                className={`gov-select ${getValidationClass("clan_id")}`}
+                onChange={handleClanChange}
+                onBlur={handleBlur}
+                value={formData.clan_id}
+                required
+                disabled={!formData.district_id}
+              >
+                <option value="">Select Clan</option>
+                {clans.map((clan) => (
+                  <option key={clan.id} value={clan.id}>
+                    {clan.name}
+                  </option>
+                ))}
+              </select>
+              {touched.clan_id && errors.clan_id && <div className="gov-invalid-feedback">{errors.clan_id}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="town_id">Town <span className="gov-label-required">*</span></label>
+              <select
+                name="town_id"
+                id="town_id"
+                className={`gov-select ${getValidationClass("town_id")}`}
+                onChange={handleTownChange}
+                onBlur={handleBlur}
+                value={formData.town_id}
+                required
+                disabled={!formData.clan_id}
+              >
+                <option value="">Select Town</option>
+                {towns.map((town) => (
+                  <option key={town.id} value={town.id}>
+                    {town.name}
+                  </option>
+                ))}
+              </select>
+              {touched.town_id && errors.town_id && <div className="gov-invalid-feedback">{errors.town_id}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="village_id">Village <span className="gov-label-required">*</span></label>
+              <select
+                name="village_id"
+                id="village_id"
+                className={`gov-select ${getValidationClass("village_id")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.village_id}
+                required
+                disabled={!formData.town_id}
+              >
+                <option value="">Select Village</option>
+                {villages.map((village) => (
+                  <option key={village.id} value={village.id}>
+                    {village.name}
+                  </option>
+                ))}
+              </select>
+              {touched.village_id && errors.village_id && <div className="gov-invalid-feedback">{errors.village_id}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="password">Password <span className="gov-label-required">*</span></label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                className={`gov-input ${getValidationClass("password")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.password}
+                required
+              />
+              {touched.password && errors.password && <div className="gov-invalid-feedback">{errors.password}</div>}
+            </div>
+
+            <div className="gov-field">
+              <label className="gov-label" htmlFor="confirmPassword">Confirm Password <span className="gov-label-required">*</span></label>
+              <input
+                type="password"
+                name="confirmPassword"
+                id="confirmPassword"
+                className={`gov-input ${getValidationClass("confirmPassword")}`}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={formData.confirmPassword}
+                required
+              />
+              {touched.confirmPassword && errors.confirmPassword && <div className="gov-invalid-feedback">{errors.confirmPassword}</div>}
+            </div>
+
+            <button type="submit" className="gov-btn" disabled={loading} style={{ marginTop: '0.6rem' }}>
+              {loading ? "Signing up..." : "Sign Up"}
+            </button>
+          </form>
+        </div>
+
+        <div className="gov-card-footer">
+          <a href="./login" className="gov-footer-link">Already have an account? Sign in</a>
+          <span className="gov-footer-ref">SVMS-2026</span>
+        </div>
       </div>
     </div>
   );

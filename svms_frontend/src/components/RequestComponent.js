@@ -541,7 +541,7 @@ const TransferRequest = () => {
                       </Form.Group>
                       <Form.Group>
                         <Form.Label>Supporting Document (Optional)</Form.Label>
-                        <Form.Control type="file" className="bg-black text-white border-secondary" name="document" onChange={handleChange} />
+                        <Form.Control type="file" className="bg-black text-white border-secondary" name="document" accept=".pdf,.jpg" onChange={handleChange} />
                         <Form.Text className="text-muted">Job letter, Marriage certificate, Admission letter, etc.</Form.Text>
                       </Form.Group>
                     </Col>
