@@ -10,6 +10,7 @@
     "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/index.js",
     "prebuild": "node clean_dist.js",
     "build": "babel src --out-dir dist --source-maps inline --copy-files",
+    "vercel-build": "babel src --out-dir dist --source-maps inline --copy-files",
     "migrate": "npx sequelize-cli db:migrate",
     "down": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",
