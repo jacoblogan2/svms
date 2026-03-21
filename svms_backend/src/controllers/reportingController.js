@@ -143,8 +143,9 @@ export const submitReport = async (req, res) => {
     const { id } = req.params;
     const { role } = req.user;
     
-    // Determine next superior role
-    const rolesArray = ["admin", "county_leader", "district_leader", "clan_leader", "town_leader", "village_leader"];
+    // Determine next superior role (simplified: village_leader → admin)
+    const rolesArray = ["admin", "village_leader"];
+    // const rolesArray = ["admin", "county_leader", "district_leader", "clan_leader", "town_leader", "village_leader"]; // REMOVED — old hierarchy
     const currentIndex = rolesArray.indexOf(role);
     
     if (currentIndex <= 0) {

@@ -34,10 +34,10 @@ module.exports = (sequelize, DataTypes) => {
       image: DataTypes.STRING,
       role: {
         type: DataTypes.ENUM(
-          "county_leader",
-          "district_leader",
-          "clan_leader",
-          "town_leader",
+          // "county_leader",    // REMOVED — simplified to 3 roles
+          // "district_leader",  // REMOVED
+          // "clan_leader",      // REMOVED
+          // "town_leader",      // REMOVED
           "village_leader",
           "admin",
           "citizen",

@@ -5,10 +5,10 @@ import * as valUtils from "../utils/validation";
 // Defines which address fields are required per role
 const ROLE_REQUIRED_FIELDS = {
   admin:           [],
-  county_leader:   ["county_id"],
-  district_leader: ["county_id", "district_id"],
-  clan_leader:     ["county_id", "district_id", "clan_id"],
-  town_leader:     ["county_id", "district_id", "clan_id", "town_id"],
+  // county_leader:   ["county_id"],                                              // REMOVED
+  // district_leader: ["county_id", "district_id"],                              // REMOVED
+  // clan_leader:     ["county_id", "district_id", "clan_id"],                   // REMOVED
+  // town_leader:     ["county_id", "district_id", "clan_id", "town_id"],        // REMOVED
   village_leader:  ["county_id", "district_id", "clan_id", "town_id", "village_id"],
   citizen:         ["county_id", "district_id", "clan_id", "town_id", "village_id"],
 };
@@ -308,11 +308,13 @@ const AddUser = () => {
           <select name="role" className={`form-select ${getValidationClass("role")}`} style={inputStyle} onChange={handleRoleChange} onBlur={handleBlur} value={formData.role} required>
             <option value="citizen">Citizen</option>
             <option value="village_leader">Village Leader</option>
+            {/* REMOVED — intermediate leader roles
             <option value="town_leader">Town Leader</option>
             <option value="clan_leader">Clan Leader</option>
             <option value="district_leader">District Leader</option>
             <option value="county_leader">County Leader</option>
             <option value="admin">Admin</option>
+            */}
           </select>
           {touched.role && errors.role && <div className="invalid-feedback d-block">{errors.role}</div>}
         </div>

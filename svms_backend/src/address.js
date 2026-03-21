@@ -40,8 +40,8 @@ export default {
     },
     "Sanniquellie-Mahn": {
       Sanniquellie: {
-        "Sanniquellie City": [],
-        "Geipa Town": []
+        "Sanniquellie City": ["Sophea"],
+        "Geipa Town": [],
       },
       Mahn: {
         "Yolowee Town": [],
@@ -58,62 +58,6 @@ export default {
       Gbehlay: {
         "Loguatuo Town": [],
         "Karnplay City": []
-      },
-    },
-  },
-  Bong: {
-    Sanayea: {
-      Menquelleh: {
-        "Sanoyea Town": ["Sanoyea Village A", "Sanoyea Village B"]
-      },
-      Wallahun: {
-        "Wallahun Town": ["Wallahun Village"]
-      },
-      Deingmah: {
-        "Deingmah Town": ["Deingmah Village"]
-      },
-      Boryermah: {
-        "Boryermah Town": ["Boryermah Village 1", "Boryermah Village 2"]
-      },
-      Sanoyea: {
-        "Garmue Town": ["Garmue Village"]
-      },
-      Bonkomu: {
-        "Bonkomu Town": ["Bonkomu Village"]
-      },
-    },
-    Suakoko: {
-      Suakoko: {
-        "Suakoko Town": ["Suakoko Village A", "Suakoko Village B"],
-        "Phebe Town": ["Phebe Village"]
-      },
-    },
-    Jorquelleh: {
-      "Jorquelleh 1": {
-        "Gbarnga City": []
-      },
-      "Jorquelleh 2": {
-        "Wainsue Town": []
-      },
-    },
-    "Panta-Kpa": {
-      Wrunah: {
-        "Rock Crusher Town": []
-      },
-      Panta: {
-        "Quikon area": []
-      },
-      Waytua: {
-        "Waytua Town": []
-      },
-      Wolota: {
-        "Wolota Town": []
-      },
-    },
-    Salala: {
-      Salala: {
-        "Salala Town": [],
-        "Totota Town": []
       },
     },
   },

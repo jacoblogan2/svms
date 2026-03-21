@@ -1,28 +1,28 @@
 /**
  * Role hierarchy configuration and location scoping helpers.
  *
- * Hierarchy levels (lower = higher authority):
- *   admin(0) > county_leader(1) > district_leader(2) > clan_leader(3) > town_leader(4) > village_leader(5) > citizen(6)
+ * Simplified hierarchy (3 roles only):
+ *   admin(0) > village_leader(1) > citizen(2)
  */
 
 // Numeric level per role — lower number = higher authority
 export const ROLE_LEVELS = {
   admin: 0,
-  county_leader: 1,
-  district_leader: 2,
-  clan_leader: 3,
-  town_leader: 4,
-  village_leader: 5,
-  citizen: 6,
+  // county_leader: 1,    // REMOVED
+  // district_leader: 2,  // REMOVED
+  // clan_leader: 3,      // REMOVED
+  // town_leader: 4,      // REMOVED
+  village_leader: 1,
+  citizen: 2,
 };
 
 // Human-readable labels for each role
 export const ROLE_LABELS = {
   admin: "Admin",
-  county_leader: "County Leader",
-  district_leader: "District Leader",
-  clan_leader: "Clan Leader",
-  town_leader: "Town Leader",
+  // county_leader: "County Leader",      // REMOVED
+  // district_leader: "District Leader",  // REMOVED
+  // clan_leader: "Clan Leader",          // REMOVED
+  // town_leader: "Town Leader",          // REMOVED
   village_leader: "Village Leader",
   citizen: "Citizen",
 };
@@ -30,20 +30,20 @@ export const ROLE_LABELS = {
 // All roles in hierarchy order
 export const ALL_ROLES = [
   "admin",
-  "county_leader",
-  "district_leader",
-  "clan_leader",
-  "town_leader",
+  // "county_leader",    // REMOVED
+  // "district_leader",  // REMOVED
+  // "clan_leader",      // REMOVED
+  // "town_leader",      // REMOVED
   "village_leader",
   "citizen",
 ];
 
 // All leader roles (non-admin and non-citizen)
 export const LEADER_ROLES = [
-  "county_leader",
-  "district_leader",
-  "clan_leader",
-  "town_leader",
+  // "county_leader",    // REMOVED
+  // "district_leader",  // REMOVED
+  // "clan_leader",      // REMOVED
+  // "town_leader",      // REMOVED
   "village_leader",
 ];
 
@@ -51,11 +51,7 @@ export const LEADER_ROLES = [
  * Build a Sequelize WHERE clause that scopes data to the user's location.
  *
  * - admin → no filter (sees everything)
- * - county_leader → filter by county_id
- * - district_leader → filter by county_id + district_id
- * - clan_leader → filter by county_id + district_id + clan_id
- * - town_leader → filter by county_id + district_id + clan_id + town_id
- * - village_leader → filter by county_id + district_id + clan_id + town_id + village_id
+ * - village_leader → filter by village_id (and parent location chain)
  * - citizen → filter by village_id
  *
  * @param {object} user — the logged-in user record (must have role and location IDs)
@@ -68,6 +64,7 @@ export const getLocationScope = (user) => {
     case "admin":
       return {}; // no restriction
 
+    /* REMOVED — intermediate leader roles no longer exist
     case "county_leader":
       return { county_id: user.county_id };
 
@@ -91,6 +88,7 @@ export const getLocationScope = (user) => {
         clan_id: user.clan_id,
         town_id: user.town_id,
       };
+    */
 
     case "village_leader":
       return {

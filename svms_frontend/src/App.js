@@ -37,20 +37,22 @@ import './components/style.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Role labels for display
+// Role labels for display (simplified to 3 roles)
 const ROLE_LABELS = {
   admin: "Admin",
-  county_leader: "County Leader",
-  district_leader: "District Leader",
-  clan_leader: "Clan Leader",
-  town_leader: "Town Leader",
+  // county_leader: "County Leader",      // REMOVED
+  // district_leader: "District Leader",  // REMOVED
+  // clan_leader: "Clan Leader",          // REMOVED
+  // town_leader: "Town Leader",          // REMOVED
   village_leader: "Village Leader",
   citizen: "Citizen",
 };
 
-// All leader roles (used in route protection)
-const ALL_LEADERS = ['admin', 'county_leader', 'district_leader', 'clan_leader', 'town_leader', 'village_leader'];
-const MANAGE_LEADERS = ['admin', 'county_leader', 'district_leader', 'town_leader'];
+// All leader roles (simplified)
+const ALL_LEADERS = ['admin', 'village_leader'];
+// const ALL_LEADERS = ['admin', 'county_leader', 'district_leader', 'clan_leader', 'town_leader', 'village_leader']; // REMOVED — old hierarchy
+const MANAGE_LEADERS = ['admin'];
+// const MANAGE_LEADERS = ['admin', 'county_leader', 'district_leader', 'town_leader']; // REMOVED — old hierarchy
 
 /**
  * ProtectedRoute: wraps a page component and redirects to /statistics
@@ -87,7 +89,7 @@ const MainLayout = () => {
       <div className={`content-wrapper ${isLoginPage ? 'login-page' : ''}`}>
         <Routes>
           
-          {/* Users / Leaders list — admin + leaders who can view subordinates */}
+          {/* Users / Leaders list — admin + village_leader */}
           <Route path="/users" element={
             <ProtectedRoute allowedRoles={ALL_LEADERS}>
               <Users />
@@ -98,7 +100,7 @@ const MainLayout = () => {
           <Route path="/profilecitizen" element={<ProfileCitizen />} />
           <Route path="/logout" element={<Logout />} />
 
-          {/* Add users — requires create_user permission (admin + leaders) */}
+          {/* Add users — admin only */}
           <Route path="/addusers" element={
             <ProtectedRoute allowedRoles={MANAGE_LEADERS}>
               <AddLeader />
@@ -159,7 +161,7 @@ const MainLayout = () => {
             } 
           />
           <Route path="/citizens" element={
-            <ProtectedRoute allowedRoles={[...ALL_LEADERS, 'clan_leader']}>
+            <ProtectedRoute allowedRoles={ALL_LEADERS}>
               <Citizens />
             </ProtectedRoute>
           } />
@@ -195,4 +197,3 @@ function App() {
 
 export { ROLE_LABELS };
 export default App;
-

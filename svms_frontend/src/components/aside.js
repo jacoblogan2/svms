@@ -36,7 +36,7 @@ function Sidebar() {
       {
         category: "Services",
         items: [
-          { label: "Add Leaders Users", icon: "bi-person-plus", link: "../addusers" },
+          { label: "Add Village Leader", icon: "bi-person-plus", link: "../addusers" },
           { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
           { label: "Manage Post Types", icon: "bi-tags", link: "../post_type" },
           { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
@@ -46,7 +46,7 @@ function Sidebar() {
       {
         category: "Access",
         items: [
-          { label: "List of Leaders", icon: "bi-person-lines-fill", link: "../users" },
+          { label: "List of Village Leaders", icon: "bi-person-lines-fill", link: "../users" },
           { label: "List of Citizens", icon: "bi-people", link: "../citizens" },
         ],
       },
@@ -63,154 +63,12 @@ function Sidebar() {
       },
     ],
 
-    county_leader: [
-      {
-        category: "Dashboard",
-        items: [
-          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
-          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
-        ],
-      },
-      {
-        category: "Management",
-        items: [
-          { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
-          { label: "View Districts & Leaders", icon: "bi-person-lines-fill", link: "../users" },
-          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
-          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
-        ],
-      },
-      {
-        category: "Communication",
-        items: [
-          { label: "Add Broadcast", icon: "bi-pencil-square", link: "../addpost" },
-          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
-          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
-        ],
-      },
-      {
-        category: "Activities",
-        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
-      },
-      {
-        category: "Settings",
-        items: [
-          { label: "Settings", icon: "bi-gear", link: "../profile" },
-          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
-        ],
-      },
-    ],
-
-    district_leader: [
-      {
-        category: "Dashboard",
-        items: [
-          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
-          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
-        ],
-      },
-      {
-        category: "Management",
-        items: [
-          { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
-          { label: "View Leaders", icon: "bi-person-lines-fill", link: "../users" },
-          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
-          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
-        ],
-      },
-      {
-        category: "Communication",
-        items: [
-          { label: "Add Broadcast", icon: "bi-pencil-square", link: "../addpost" },
-          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
-          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
-        ],
-      },
-      {
-        category: "Activities",
-        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
-      },
-      {
-        category: "Settings",
-        items: [
-          { label: "Settings", icon: "bi-gear", link: "../profile" },
-          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
-        ],
-      },
-    ],
-
-    clan_leader: [
-      {
-        category: "Dashboard",
-        items: [
-          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
-          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
-        ],
-      },
-      {
-        category: "Community",
-        items: [
-          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
-          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
-        ],
-      },
-      {
-        category: "Communication",
-        items: [
-          { label: "Add Alert", icon: "bi-pencil-square", link: "../addpost" },
-          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
-        ],
-      },
-      {
-        category: "Activities",
-        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
-      },
-      {
-        category: "Settings",
-        items: [
-          { label: "Settings", icon: "bi-gear", link: "../profile" },
-          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
-        ],
-      },
-    ],
-
-    town_leader: [
-      {
-        category: "Dashboard",
-        items: [
-          { label: "Dashboard", icon: "bi-house", link: "/statistics" },
-          { label: "Infographic", icon: "bi-bar-chart", link: "/map" },
-        ],
-      },
-      {
-        category: "Management",
-        items: [
-          { label: "Add Leaders/Users", icon: "bi-person-plus", link: "../addusers" },
-          { label: "View Village Leaders", icon: "bi-person-lines-fill", link: "../users" },
-          { label: "View Citizens", icon: "bi-people", link: "../citizens" },
-          { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
-        ],
-      },
-      {
-        category: "Communication",
-        items: [
-          { label: "Add Broadcast", icon: "bi-pencil-square", link: "../addpost" },
-          { label: "View Broadcasts", icon: "bi-file-earmark-text", link: "../post" },
-          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
-        ],
-      },
-      {
-        category: "Activities",
-        items: [{ label: "Notifications", icon: "bi-bell", link: "../notifications" }],
-      },
-      {
-        category: "Settings",
-        items: [
-          { label: "Settings", icon: "bi-gear", link: "../profile" },
-          { label: "Logout", icon: "bi-box-arrow-right", link: "../logout" },
-        ],
-      },
-    ],
+    /* REMOVED — intermediate leader role menus no longer exist
+    county_leader: [...],
+    district_leader: [...],
+    clan_leader: [...],
+    town_leader: [...],
+    */
 
     village_leader: [
       {
@@ -230,6 +88,7 @@ function Sidebar() {
         category: "Access",
         items: [{ label: "View Village Citizens", icon: "bi-person-badge", link: "../users" },
           { label: "Add Citizen", icon: "bi-person", link: "../addcitizen" },
+          { label: "Requests", icon: "bi-envelope", link: "../request/admin" },
           { label: "Household Records", icon: "bi-house-door", link: "../family" },
           { label: "Administrative Reports", icon: "bi-file-earmark-bar-graph", link: "../reports" },
         ],
