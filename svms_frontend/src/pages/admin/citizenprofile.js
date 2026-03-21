@@ -6,6 +6,12 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { useNavigate } from 'react-router-dom';
 import ListDocument from '../admin/Mydocuments'
 
+const ROLE_LABELS = {
+  admin: "Admin",
+  village_leader: "Village Leader",
+  citizen: "Citizen",
+};
+
 function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -221,7 +227,38 @@ function Home() {
                 <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
                   <img src={user.file || 'assets/img/v.jpg'} alt="Profile" className="rounded-circle" style={{height:'3.5cm',width:'10cm'}}/>
                   <h2>{user.firstname} {user.lastname}</h2>
-                  <h3>{user.role}</h3>
+                  <h3>{ROLE_LABELS[user.role] || user.role}</h3>
+                </div>
+              </div>
+
+              {/* ─── Registered Location Card ─── */}
+              <div className="card">
+                <div className="card-body pt-4">
+                  <h5 className="card-title" style={{color:'#f0ad4e', borderBottom:'1px solid #333', paddingBottom:'8px'}}>
+                    <i className="bi bi-geo-alt-fill me-2"></i>Registered Location
+                  </h5>
+                  <div style={{fontSize:'0.95rem'}}>
+                    <div className="d-flex justify-content-between py-2" style={{borderBottom:'1px solid #2a2a2a'}}>
+                      <span style={{color:'#999'}}>County</span>
+                      <span style={{color:'#fff', fontWeight:'500'}}>{user.county?.name || '—'}</span>
+                    </div>
+                    <div className="d-flex justify-content-between py-2" style={{borderBottom:'1px solid #2a2a2a'}}>
+                      <span style={{color:'#999'}}>District</span>
+                      <span style={{color:'#fff', fontWeight:'500'}}>{user.district?.name || '—'}</span>
+                    </div>
+                    <div className="d-flex justify-content-between py-2" style={{borderBottom:'1px solid #2a2a2a'}}>
+                      <span style={{color:'#999'}}>Clan</span>
+                      <span style={{color:'#fff', fontWeight:'500'}}>{user.clan?.name || '—'}</span>
+                    </div>
+                    <div className="d-flex justify-content-between py-2" style={{borderBottom:'1px solid #2a2a2a'}}>
+                      <span style={{color:'#999'}}>Town</span>
+                      <span style={{color:'#fff', fontWeight:'500'}}>{user.town?.name || '—'}</span>
+                    </div>
+                    <div className="d-flex justify-content-between py-2">
+                      <span style={{color:'#999'}}>Village</span>
+                      <span style={{color:'#fff', fontWeight:'500'}}>{user.village?.name || '—'}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -253,7 +290,11 @@ function Home() {
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Role</div>
-                        <div className="col-lg-9 col-md-8">{user.role}</div>
+                        <div className="col-lg-9 col-md-8">
+                          <span className="badge" style={{backgroundColor:'#f0ad4e', color:'#000', fontSize:'0.85rem', padding:'5px 12px'}}>
+                            {ROLE_LABELS[user.role] || user.role}
+                          </span>
+                        </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Phone</div>
@@ -262,6 +303,15 @@ function Home() {
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">NID</div>
                         <div className="col-lg-9 col-md-8">{user.nid || 'N/A'}</div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-3 col-md-4 label">Verification</div>
+                        <div className="col-lg-9 col-md-8">
+                          {user.isVerified 
+                            ? <span className="badge bg-success"><i className="bi bi-check-circle me-1"></i>Verified</span>
+                            : <span className="badge bg-warning text-dark"><i className="bi bi-exclamation-circle me-1"></i>Not Verified</span>
+                          }
+                        </div>
                       </div>
                     </div>
 

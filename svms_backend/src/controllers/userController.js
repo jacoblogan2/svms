@@ -192,7 +192,7 @@ export const addUser = async (req, res) => {
 
     try {
       const token = generateVerificationToken(newUser.id);
-      const link = `http://localhost:3000/verify-email?token=${token}`;
+      const link = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
       await sendVerificationEmail(newUser.email, link);
     } catch (verifEmailError) {
       console.error("Failed to send verification email in addUser:", verifEmailError);
@@ -269,7 +269,7 @@ export const SignUp = async (req, res) => {
 
     try {
       const token = generateVerificationToken(newUser.id);
-      const link = `http://localhost:3000/verify-email?token=${token}`;
+      const link = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
       await sendVerificationEmail(newUser.email, link);
     } catch (verifEmailError) {
       console.error("Failed to send verification email in SignUp:", verifEmailError);

@@ -10,9 +10,21 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Enable CORS with frontend origin and credentials
+// ✅ Enable CORS — allow the frontend origin (from env) and credentials
+const allowedOrigins = [
+  process.env.FRONTEND_URL,            // production: https://svms-liberia.vercel.app
+  "http://localhost:3000",              // local development
+].filter(Boolean);
+
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true, // allows Authorization header
 }));
 
