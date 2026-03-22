@@ -13,7 +13,7 @@ const {
   PRO_DATABASE_PORT,
 } = process.env;
 
-module.exports = {
+export default {
   development: {
     username: DEV_DATABASE_USER,
     password: DEV_DATABASE_PASSWORD,

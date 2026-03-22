@@ -1,7 +1,6 @@
-"use strict";
-const { Model } = require("sequelize");
+import { Model } from "sequelize";
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   class Comments extends Model {
     static associate(models) {
       // A comment belongs to a post

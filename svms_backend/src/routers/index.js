@@ -19,23 +19,28 @@ router.use('/address', Address);
 router.use('/notification', notification);
 
 // ── New Routers with robust error handling ────────────────
-try {
-  const familyMemberRouter = require('./familyMemberRouter.js');
-  const familyRouter = familyMemberRouter.default || familyMemberRouter;
-  router.use('/family-members', familyRouter);
-  console.log('✅ familyMemberRouter mounted at /api/v1/family-members');
-} catch (err) {
-  console.error('❌ Failed to load familyMemberRouter:', err.message);
-}
+// Note: In ESM, we use dynamic import() for conditional loading
+const loadOptionalRouters = async () => {
+  try {
+    const familyMemberModule = await import('./familyMemberRouter.js');
+    const familyRouter = familyMemberModule.default || familyMemberModule;
+    router.use('/family-members', familyRouter);
+    console.log('✅ familyMemberRouter mounted at /api/v1/family-members');
+  } catch (err) {
+    console.error('❌ Failed to load familyMemberRouter:', err.message);
+  }
 
-try {
-  const reportingRouter = require('./reportingRouter.js');
-  const reportsRouter = reportingRouter.default || reportingRouter;
-  router.use('/reports', reportsRouter);
-  console.log('✅ reportingRouter mounted at /api/v1/reports');
-} catch (err) {
-  console.error('❌ Failed to load reportingRouter:', err.message);
-}
+  try {
+    const reportingModule = await import('./reportingRouter.js');
+    const reportsRouter = reportingModule.default || reportingModule;
+    router.use('/reports', reportsRouter);
+    console.log('✅ reportingRouter mounted at /api/v1/reports');
+  } catch (err) {
+    console.error('❌ Failed to load reportingRouter:', err.message);
+  }
+};
+
+loadOptionalRouters();
 
 // Diagnostic: hit GET /api/v1/test-routes to see all mounted routes
 router.get('/test-routes', (req, res) => {

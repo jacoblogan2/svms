@@ -1,9 +1,11 @@
-require("dotenv").config();
-const PaypackJs = require("paypack-js").default;
+import dotenv from "dotenv";
+import PaypackJs from "paypack-js";
 
-const paypack = new PaypackJs({
+dotenv.config();
+
+const paypack = new PaypackJs.default({
   client_id: process.env.CLIENT_ID,
   client_secret: process.env.CLIENT_SECRET,
 });
 
-module.exports = paypack;
+export default paypack;
