@@ -1,1 +1,0 @@
-STATUS: 401\n{"message":"Not authorized, no token"}

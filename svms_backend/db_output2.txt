@@ -1,5 +1,0 @@
-Counties table EXISTS.
-Districts table EXISTS.
-Clans table EXISTS.
-Towns table EXISTS.
-Villages table EXISTS.

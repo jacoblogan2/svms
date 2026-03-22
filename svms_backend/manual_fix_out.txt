@@ -1,3 +1,0 @@
-Starting manual db fix...
-Table "Villages" already exists.
-Table "Comments" already exists.
