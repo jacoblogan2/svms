@@ -24,7 +24,7 @@ import {
 import Email from "../utils/mailer.js";
 import {
   createNotification,
-} from "../services/NotificationService";
+} from "../services/NotificationService.js";
 
 
 

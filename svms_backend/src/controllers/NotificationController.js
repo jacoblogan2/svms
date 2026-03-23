@@ -5,7 +5,7 @@ import {
   markAllNotificationsAsRead,
   deleteNotification,
   deleteAllNotifications
-} from "../services/NotificationService";
+} from "../services/NotificationService.js";
 
 // Get all notifications for the logged-in user
 export const getNotificationsController = async (req, res) => {
