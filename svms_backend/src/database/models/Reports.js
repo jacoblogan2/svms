@@ -1,4 +1,5 @@
-import { Model } from "sequelize";
+import pkg from 'sequelize';
+const { Model } = pkg;
 
 export default (sequelize, DataTypes) => {
   class Reports extends Model {

@@ -17,7 +17,7 @@ import {
 import { verifyEmail } from '../controllers/verificationController.js';
 import { protect } from '../middlewares/protect.js';
 import { checkRole, checkPermission } from '../middlewares/rbac.js';
-import multer from 'multer';
+
 import {
   addRequest,
   approveRequest,
@@ -29,7 +29,8 @@ import {
 } from '../controllers/userController.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+
+
 
 router.post('/signup', SignUp);
 router.get('/verify-email', verifyEmail);
