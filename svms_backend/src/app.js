@@ -37,8 +37,15 @@ app.use(fileUploader({
   limits: { fileSize: 50 * 1024 * 1024 },
 }));
 
+
+// Test route for root
+app.get("/", (req, res) => {
+  res.json({ success: true, message: "SVMS API is running 🚀", version: "1.0.0" });
+});
+
 // Routes
 app.use("/api/v1", router);
+
 
 // ✅ 404 Handler for undefined routes
 app.use((req, res) => {
