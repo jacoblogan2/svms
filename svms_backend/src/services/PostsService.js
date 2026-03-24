@@ -1,14 +1,17 @@
-import { Sequelize, where } from 'sequelize';
+// import { Sequelize, where } from 'sequelize';
 import db from "../database/models/index.js";
 // const Post = db["Posts"];
-const { Counties, Districts, Clans, Towns, Villages, Categories, Users, Posts, Notifications,Comments } = db;
+const { Counties, Districts, Clans, Towns, Villages, Categories, Users, Posts, Comments } = db;
 
 export const createComment = async (data) => {
   try {
+    if (!data) {
+      throw new Error("No data provided");
+    }
     const newComment = await Comments.create(data);
     return newComment;
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -178,7 +181,7 @@ export const createPost = async (PostData) => {
   try {
     return await Posts.create(PostData);
   } catch (error) {
-    throw new Error(`Error creating Post: ${error.message}`);
+    throw error;
   }
 };
 

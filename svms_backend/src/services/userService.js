@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import db from "../database/models/index.js";
-import Sequelize from "sequelize";
+
 
 const getModels = () => {
     const {

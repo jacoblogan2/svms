@@ -1,11 +1,11 @@
 import db from "../database/models/index.js";
-const { Counties, Districts, Clans, Towns, Villages,Categories,Users,Posts,Notifications} = db;
+const { Categories } = db;
 
 export const createCategory = async (categoryData) => {
   try {
     return await Categories.create(categoryData);
   } catch (error) {
-    throw new Error(`Error creating Category: ${error.message}`);
+    throw error;
   }
 };
 
